@@ -1,6 +1,7 @@
-// src/app/auth/signout/page.tsx
+// src/app/signout/page.tsx
 "use client";
 
+import React from 'react';
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,7 +12,14 @@ export default function SignOut() {
 
   const handleSignOut = async () => {
     setIsLoading(true);
-    await signOut({ callbackUrl: "/" });
+    try {
+      // Use redirect: false and then manually redirect
+      await signOut({ redirect: false });
+      router.push("/");
+    } catch (error) {
+      console.error("Sign out error:", error);
+      setIsLoading(false);
+    }
   };
 
   return (

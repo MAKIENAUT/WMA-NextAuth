@@ -20,7 +20,7 @@ export default function AuthStatus() {
           <span className="font-bold">{session.user?.email}</span>
         </p>
         <Link
-          href="/auth/signout"
+          href="/signout"
           className="rounded bg-red-600 px-3 py-1 text-white hover:bg-red-700"
         >
           Sign out
@@ -31,7 +31,7 @@ export default function AuthStatus() {
 
   return (
     <Link
-      href="/auth/signin"
+      href="/signin"
       className="rounded bg-blue-600 px-3 py-1 text-white hover:bg-blue-700"
     >
       Sign in

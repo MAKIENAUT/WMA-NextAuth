@@ -1,6 +1,7 @@
-// src/app/auth/signin/page.tsx
+// src/app/signin/page.tsx
 "use client";
 
+import React from 'react';
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

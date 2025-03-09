@@ -12,7 +12,7 @@ export default function ProtectedContent() {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/auth/signin?callbackUrl=/protected-content");
+      router.push("/signin?callbackUrl=/protected-content");
     }
   }, [status, router]);
 
@@ -87,7 +87,7 @@ export default function ProtectedContent() {
           </p>
           <div className="flex gap-3">
             <Link 
-              href="/auth/signout" 
+              href="/signout" 
               className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
             >
               Sign Out

@@ -1,4 +1,4 @@
-// src/app/api/auth/[...nextauth]/route.ts
+// src/app/api/[...nextauth]/route.ts
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
@@ -15,10 +15,11 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
+  // Fixed pages to match your actual route structure
   pages: {
-    signIn: "/auth/signin",
-    signOut: "/auth/signout",
-    error: "/auth/error",
+    signIn: "/signin",
+    signOut: "/signout", // Updated to match your route structure
+    error: "/signin", // You might want to create a dedicated error page in the (auth) group
   },
   callbacks: {
     async signIn({ user, account, profile }) {

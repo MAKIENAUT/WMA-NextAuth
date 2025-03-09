@@ -1,6 +1,7 @@
 // src/app/unauthorized/page.tsx
 "use client";
 
+import React from 'react';
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
@@ -49,7 +50,7 @@ export default function Unauthorized() {
             Return Home
           </Link>
           <Link 
-            href="/auth/signout" 
+            href="/signout" 
             className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50"
           >
             Sign Out
