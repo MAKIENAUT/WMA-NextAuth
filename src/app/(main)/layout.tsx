@@ -1,13 +1,24 @@
-export default function MainLayout({
+import type { Metadata } from "next";
+import { SidebarProvider } from "../components/atoms/ui/sidebar";
+import Navbar from "../components/organisms/navbar";
+import Footer from "../components/organisms/footer";
+
+
+export const metadata: Metadata = {
+  title: "West Migration Agency (WMA)",
+  description: "",
+};
+
+export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
-        {children}
-      </div>
-    </div>
+    <SidebarProvider defaultOpen={false}>
+      <Navbar />
+      <main className="mt-[56px] sm:mt-[72px] md:mt-[80px]">{children}</main>
+      <Footer />
+    </SidebarProvider>
   );
 }

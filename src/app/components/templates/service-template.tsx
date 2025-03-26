@@ -1,10 +1,10 @@
-import { Button } from "@/components/atoms/ui/button";
+import { Button } from "@/app/components/atoms/ui/button";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { dm_sans } from "@/lib/fonts";
+import { cn } from "@/app/lib/utils";
+import { dm_sans } from "@/app/lib/fonts";
 import { ReactNode } from "react";
 import Image from "next/image";
-import { orelega_one } from "@/lib/fonts";
+import { orelega_one } from "@/app/lib/fonts";
 
 const services = [
   {

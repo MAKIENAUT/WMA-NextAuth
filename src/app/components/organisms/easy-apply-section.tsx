@@ -1,8 +1,9 @@
-import { orelega_one } from "@/lib/fonts";
+
 import ContentWrapper from "./content-wrapper";
 import SectionWrapper from "./section-wrapper";
 import EasyApplyFileUpload from "./easy-apply-file-upload";
 import { cookies } from "next/headers";
+import { orelega_one } from "@/app/lib/fonts";
 
 export default async function EasyApplySection() {
   const cookieStore = await cookies();

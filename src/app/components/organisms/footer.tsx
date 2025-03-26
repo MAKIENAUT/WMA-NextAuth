@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { ReactNode } from "react";
-import { cn } from "@/lib/utils";
 import { Button } from "../atoms/ui/button";
 import Link from "next/link";
-import Facebook from "../../../public/facebook";
-import Instagram from "../../../public/instagram";
+import { cn } from "@/app/lib/utils";
+import Instagram from "../../../../public/instagram";
+import Facebook from "../../../../public/facebook";
 
 function FooterGroup({
   children,

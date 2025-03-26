@@ -1,16 +1,6 @@
+// wma-sidebar.tsx
 "use client";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/atoms/ui/sidebar";
+
 import { Button } from "./ui/button";
 import { ChevronUp, X } from "lucide-react";
 import {
@@ -20,16 +10,33 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import Link from "next/link";
-import { NavbarLinksProps } from "@/types/navbar-links";
 import { Skeleton } from "./ui/skeleton";
+import {   Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar, } from "./ui/sidebar";
+import { signOut } from "next-auth/react";
+
+interface WMASidebarProps {
+  items: {
+    title: string;
+    url: string;
+  }[];
+  session: any;
+  isLoading: boolean;
+}
 
 export default function WMASidebar({
   items,
-  data,
-  isPending,
-  isError,
-  logoutMutation,
-}: NavbarLinksProps) {
+  session,
+  isLoading,
+}: WMASidebarProps) {
   const { toggleSidebar, isMobile } = useSidebar();
 
   if (isMobile) {
@@ -59,16 +66,16 @@ export default function WMASidebar({
         </SidebarContent>
         <SidebarFooter>
           <SidebarMenu>
-            {isPending ? (
+            {isLoading ? (
               <Skeleton className="h-4 w-20" />
-            ) : isError || !data ? (
+            ) : !session ? (
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
                   variant="outline"
                   onClick={toggleSidebar}
                 >
-                  <Link href="/login">Sign in</Link>
+                  <Link href="/signin">Sign in</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ) : (
@@ -76,11 +83,11 @@ export default function WMASidebar({
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <SidebarMenuButton>
-                      {data.user.name} <ChevronUp className="ml-auto" />
+                      {session.user?.name || session.user?.email} <ChevronUp className="ml-auto" />
                     </SidebarMenuButton>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent side="top">
-                    <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
+                    <DropdownMenuItem onClick={() => signOut()}>
                       Sign out
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -92,4 +99,5 @@ export default function WMASidebar({
       </Sidebar>
     );
   }
+  return null;
 }

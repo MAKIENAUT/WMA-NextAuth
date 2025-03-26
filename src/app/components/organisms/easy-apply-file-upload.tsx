@@ -1,11 +1,11 @@
 "use client";
 import { motion } from "motion/react";
 import { Button } from "../atoms/ui/button";
-import { toast } from "@/hooks/use-toast";
 import axios from "axios";
 import { ChangeEvent, useState } from "react";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { useRouter } from "next/navigation";
+import { toast } from "@/app/hooks/use-toast";
 
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
@@ -17,7 +17,7 @@ function useEasyApplyFileUpload(token: RequestCookie | undefined) {
 
   function handleTokenVerify() {
     if (!token) {
-      router.push("/login");
+      router.push("/signin");
     }
   }
 

@@ -1,6 +1,6 @@
 import React from "react";
-import { orelega_one } from "@/lib/fonts";
-import { cn } from "@/lib/utils";
+import { orelega_one } from "@/app/lib/fonts";
+import { cn } from "@/app/lib/utils";
 
 interface SectionTitleProps {
   prefix?: string;

@@ -1,15 +1,15 @@
 import React, { ReactNode } from "react";
-import type { ServiceData } from "@/types/services";
-import SectionTitle from "@/components/atoms/section-title";
-import ProcessSteps from "@/components/molecules/process-steps";
-import CallToAction from "@/components/molecules/call-to-action";
+import SectionTitle from "@/app/components/atoms/section-title";
+import ProcessSteps from "@/app/components/molecules/process-steps";
+import CallToAction from "@/app/components/molecules/call-to-action";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   ServiceCarouselDots,
 } from "./carousel";
-import { cn } from "@/lib/utils";
+import { cn } from "@/app/lib/utils";
+import { ServiceData } from "@/app/types/services";
 
 interface ServiceProcessProps {
   serviceData: ServiceData;

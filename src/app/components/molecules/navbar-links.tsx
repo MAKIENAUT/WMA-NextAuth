@@ -1,3 +1,4 @@
+// navbar-links.tsx
 "use client";
 import { ChevronDown } from "lucide-react";
 import { Button } from "../atoms/ui/button";
@@ -8,15 +9,22 @@ import {
   DropdownMenuTrigger,
 } from "../atoms/ui/dropdown-menu";
 import Link from "next/link";
-import { NavbarLinksProps } from "@/types/navbar-links";
 import { Skeleton } from "../atoms/ui/skeleton";
+import { signOut } from "next-auth/react";
+
+interface NavbarLinksProps {
+  items: {
+    title: string;
+    url: string;
+  }[];
+  session: any;
+  isLoading: boolean;
+}
 
 export default function NavbarLinks({
   items,
-  data,
-  isPending,
-  isError,
-  logoutMutation,
+  session,
+  isLoading,
 }: NavbarLinksProps) {
   return (
     <ul className="hidden md:inline-flex md:gap-4">
@@ -27,14 +35,14 @@ export default function NavbarLinks({
           </Button>
         </li>
       ))}
-      {isPending ? (
+      {isLoading ? (
         <li className="flex items-center justify-center">
           <Skeleton className="h-4 w-20" />
         </li>
-      ) : isError || !data ? (
+      ) : !session ? (
         <li>
           <Button variant="link" asChild>
-            <Link href="/login">Sign in</Link>
+            <Link href="/signin">Sign in</Link>
           </Button>
         </li>
       ) : (
@@ -42,11 +50,11 @@ export default function NavbarLinks({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="font-medium">
-                {data.user.name} <ChevronDown />
+                {session.user?.name || session.user?.email} <ChevronDown />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="bottom">
-              <DropdownMenuItem onClick={() => logoutMutation.mutate()}>
+              <DropdownMenuItem onClick={() => signOut()}>
                 Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>

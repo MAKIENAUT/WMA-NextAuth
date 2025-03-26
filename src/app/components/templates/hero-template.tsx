@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/app/lib/utils";
 import { ReactNode } from "react";
-import { orelega_one } from "@/lib/fonts";
+import { orelega_one } from "@/app/lib/fonts";
 import Image from "next/image";
 
 export const hero_items = {

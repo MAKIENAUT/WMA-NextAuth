@@ -4,21 +4,27 @@
 import React from 'react';
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { Button } from "@/app/components/atoms/ui/button";
+import FormContent from "@/app/components/molecules/form-content";
+import FormTitle from "@/app/components/molecules/form-title";
+import InputGroup from "@/app/components/molecules/input-group";
+import FormFooter from "@/app/components/molecules/form-footer";
+import FormWrapper from '@/app/components/molecules/form-wrapper';
 
 export default function Unauthorized() {
   const { data: session } = useSession();
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-8 bg-gray-50">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+    <>
+      <FormContent>
         <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
-          <p className="text-gray-600">
+          <FormTitle title="Access Denied" />
+          <p className="text-gray-600 mt-2">
             {session?.user?.email ? (
               <>Your email <span className="font-medium">{session.user.email}</span> is not authorized to access the dashboard.</>
             ) : (
@@ -42,21 +48,28 @@ export default function Unauthorized() {
           </div>
         </div>
 
-        <div className="flex justify-between">
-          <Link 
-            href="/" 
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
-          >
-            Return Home
-          </Link>
-          <Link 
-            href="/signout" 
-            className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50"
-          >
-            Sign Out
-          </Link>
-        </div>
-      </div>
-    </div>
+        <FormWrapper>
+          <InputGroup>
+            <Button
+              asChild
+              variant="default"
+              className="w-full"
+            >
+              <Link href="/">Return Home</Link>
+            </Button>
+          </InputGroup>
+          <InputGroup>
+            <Button
+              asChild
+              variant="outline"
+              className="w-full"
+            >
+              <Link href="/signout">Sign Out</Link>
+            </Button>
+          </InputGroup>
+        </FormWrapper>
+      </FormContent>
+      <FormFooter variant="login" />
+    </>
   );
 }

@@ -1,6 +1,6 @@
 // src/app/public-content/page.tsx
-import Link from "next/link";
 import AuthStatus from "@/components/AuthStatus";
+import Link from "next/link";
 
 export default function PublicContent() {
   return (

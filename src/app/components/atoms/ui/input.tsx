@@ -1,7 +1,6 @@
+import { dm_sans } from "@/app/lib/fonts";
+import { cn } from "@/app/lib/utils";
 import * as React from "react";
-
-import { cn } from "@/lib/utils";
-import { dm_sans } from "@/lib/fonts";
 
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
   ({ className, type, ...props }, ref) => {

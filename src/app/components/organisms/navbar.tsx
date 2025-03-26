@@ -1,11 +1,12 @@
+// navbar.tsx
 "use client";
 import Link from "next/link";
 import Image from "next/image";
 import { SidebarTrigger } from "../atoms/ui/sidebar";
 import WMASidebar from "../atoms/wma-sidebar";
 import NavbarLinks from "../molecules/navbar-links";
-import { useAuthContext } from "@/features/auth/components/auth-provider";
 import { Button } from "../atoms/ui/button";
+import { useSession } from "next-auth/react";
 
 const menu_items = [
   {
@@ -22,15 +23,9 @@ const menu_items = [
   },
 ];
 
-export type NavbarProps = {
-  data: {
-    title: string;
-    url: string;
-  }[];
-};
-
 export default function Navbar() {
-  const { data, isPending, isError, logoutMutation } = useAuthContext();
+  const { data: session, status } = useSession();
+  
   return (
     <>
       <nav className="fixed top-0 z-50 flex w-screen items-center justify-between bg-white p-2 sm:px-8 sm:py-4 lg:max-h-20 xl:px-20">
@@ -47,19 +42,15 @@ export default function Navbar() {
         </Button>
         <NavbarLinks
           items={menu_items}
-          data={data}
-          isPending={isPending}
-          isError={isError}
-          logoutMutation={logoutMutation}
+          session={session}
+          isLoading={status === "loading"}
         />
         <SidebarTrigger />
       </nav>
       <WMASidebar
         items={menu_items}
-        data={data}
-        isPending={isPending}
-        isError={isError}
-        logoutMutation={logoutMutation}
+        session={session}
+        isLoading={status === "loading"}
       />
     </>
   );

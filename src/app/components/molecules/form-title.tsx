@@ -1,5 +1,6 @@
-import { orelega_one } from "@/lib/fonts";
-import { cn } from "@/lib/utils";
+import { orelega_one } from "@/app/lib/fonts";
+import { cn } from "@/app/lib/utils";
+
 
 export default function FormTitle({ title }: { title: string }) {
   return (

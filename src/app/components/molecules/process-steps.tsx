@@ -1,5 +1,5 @@
 import React from "react";
-import ContentCard from "@/components/atoms/content-card";
+import ContentCard from "@/app/components/atoms/content-card";
 
 interface ProcessStepProps {
   stepNumber: number;
