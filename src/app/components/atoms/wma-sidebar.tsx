@@ -11,7 +11,7 @@ import {
 } from "./ui/dropdown-menu";
 import Link from "next/link";
 import { Skeleton } from "./ui/skeleton";
-import {   Sidebar,
+import { Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
@@ -20,8 +20,9 @@ import {   Sidebar,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar, } from "./ui/sidebar";
+  useSidebar } from "./ui/sidebar";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 
 interface WMASidebarProps {
   items: {
@@ -82,8 +83,21 @@ export default function WMASidebar({
               <SidebarMenuItem>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <SidebarMenuButton>
-                      {session.user?.name || session.user?.email} <ChevronUp className="ml-auto" />
+                    <SidebarMenuButton className="gap-2">
+                      {session.user?.image ? (
+                        <Image
+                          src={session.user.image}
+                          width={32}
+                          height={32}
+                          className="rounded-full"
+                          alt="Profile picture"
+                        />
+                      ) : (
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-sm font-medium">
+                          {session.user?.name?.charAt(0) || session.user?.email?.charAt(0)}
+                        </div>
+                      )}
+                      <ChevronUp className="ml-auto h-4 w-4" />
                     </SidebarMenuButton>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent side="top">

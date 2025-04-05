@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { Skeleton } from "../atoms/ui/skeleton";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 
 interface NavbarLinksProps {
   items: {
@@ -49,11 +50,24 @@ export default function NavbarLinks({
         <li>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="font-medium">
-                {session.user?.name || session.user?.email} <ChevronDown />
+              <Button variant="ghost" className="gap-2 p-1">
+                {session.user?.image ? (
+                  <Image
+                    src={session.user.image}
+                    width={32}
+                    height={32}
+                    className="rounded-full"
+                    alt="Profile picture"
+                  />
+                ) : (
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-sm font-medium">
+                    {session.user?.name?.charAt(0) || session.user?.email?.charAt(0)}
+                  </div>
+                )}
+                <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent side="bottom">
+            <DropdownMenuContent side="bottom" align="end">
               <DropdownMenuItem onClick={() => signOut()}>
                 Sign out
               </DropdownMenuItem>
