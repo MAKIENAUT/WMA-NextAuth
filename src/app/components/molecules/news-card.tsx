@@ -24,7 +24,7 @@ export function NewsCard({ category, post }: NewsCardProps) {
 
   return (
     <Link
-      className="h-fit rounded-xl bg-white shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] ring-offset-white transition-all ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wma-gold focus-visible:ring-offset-2 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
+      className="flex flex-col rounded-xl bg-white shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] ring-offset-white transition-all ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wma-gold focus-visible:ring-offset-2 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
       href={`/blogs/${category}/${post.url}`}
     >
       <div className="mb-2 px-2 pt-2">
@@ -37,17 +37,17 @@ export function NewsCard({ category, post }: NewsCardProps) {
           />
         </div>
       </div>
-      <div className="px-4 pb-4">
+      <div className="flex flex-1 flex-col px-4 pb-4">
         <p className="text-sm font-semibold text-wma-teal">{post.date}</p>
         <h1 className="mb-4 text-2xl font-semibold xl:text-3xl">
           {post.title}
         </h1>
-        <p className="mb-6 line-clamp-4 text-[#4D4D4D]">{cleanText}</p>
+        <p className="mb-6 flex-1 line-clamp-4 text-[#4D4D4D]">{cleanText}</p>
         <Button
           asChild
           variant="link"
           size="none"
-          className="gap-1 font-semibold text-wma-teal hover:text-wma-darkTeal"
+          className="mt-auto gap-1 font-semibold text-wma-teal hover:text-wma-darkTeal"
         >
           <div>
             Read more

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button } from "@/app/components/atoms/ui/button";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -20,6 +20,19 @@ function getPostData(
   return post as DataProps;
 }
 
+function getAdjacentPosts(categoryName: string, currentPostUrl: string) {
+  const category = blogs.find((data) => data.category === categoryName);
+  if (!category) return { prev: null, next: null };
+
+  const currentIndex = category.posts.findIndex((post) => post.url === currentPostUrl);
+  if (currentIndex === -1) return { prev: null, next: null };
+
+  return {
+    prev: currentIndex < category.posts.length - 1 ? category.posts[currentIndex + 1] : null,
+    next: currentIndex > 0 ? category.posts[currentIndex - 1] : null,
+  };
+}
+
 type MetadataProps = {
   params: Promise<{ categoryName: string; postName: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -37,7 +50,6 @@ export async function generateMetadata({
     };
   }
 
-  // Extract first paragraph text by removing HTML tags
   const description = data.text[0]?.replace(/<[^>]*>/g, "") || "";
 
   return {
@@ -58,7 +70,6 @@ type DataProps = {
   text: string[];
 };
 
-// Mapping of HTML tags to Tailwind classes
 const tagStyles = {
   h1: "text-3xl font-bold text-gray-900 mb-4 mt-6",
   h2: "text-2xl font-semibold text-gray-800 mb-3 mt-5",
@@ -80,16 +91,14 @@ export default async function page({
 }) {
   const { categoryName, postName } = await params;
   const data = getPostData(categoryName, postName);
+  const { prev, next } = getAdjacentPosts(categoryName, postName);
 
   if (!data) {
     notFound();
   }
 
-  // Function to add Tailwind classes to HTML tags
   const addTailwindClasses = (htmlString: string) => {
-    // Use a simple regex to add classes to known tags
     return Object.entries(tagStyles).reduce((acc, [tag, classes]) => {
-      // Match opening tags and add classes
       const openTagRegex = new RegExp(`<(${tag})(?![^>]*class=)`, "g");
       return acc.replace(openTagRegex, `<$1 class="${classes}"`);
     }, htmlString);
@@ -139,6 +148,39 @@ export default async function page({
                   />
                 ))}
               </div>
+            </div>
+            
+            {/* Navigation controls */}
+            <div className="flex justify-between mt-8 border-t border-gray-200 pt-6">
+              {prev ? (
+                <Button
+                  asChild
+                  variant="link"
+                  size="none"
+                  className="flex items-center gap-1 text-wma-darkTeal hover:text-wma-teal"
+                >
+                  <Link href={`/blogs/${categoryName}/${prev.url}`}>
+                    <ChevronLeft className="h-4 w-4" />
+                    <span className="max-w-[200px] truncate">{prev.title}</span>
+                  </Link>
+                </Button>
+              ) : (
+                <div />
+              )}
+              
+              {next ? (
+                <Button
+                  asChild
+                  variant="link"
+                  size="none"
+                  className="flex items-center gap-1 text-wma-darkTeal hover:text-wma-teal ml-auto"
+                >
+                  <Link href={`/blogs/${categoryName}/${next.url}`}>
+                    <span className="max-w-[200px] truncate">{next.title}</span>
+                    <ChevronRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              ) : null}
             </div>
           </div>
         </div>

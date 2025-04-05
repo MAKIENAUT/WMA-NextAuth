@@ -77,6 +77,7 @@ function HeaderText({
         "md:py-16",
         "lg:px-12 lg:py-20",
         "xl:px-20 xl:py-28",
+        "sm:before:absolute sm:before:content-[''] sm:before:top-0 sm:before:bottom-0 sm:before:right-full sm:before:w-screen sm:before:bg-wma-darkTeal sm:before:z-[-1]",
         className
       )}
     >
@@ -156,11 +157,18 @@ export default function HeroTemplate({
   return (
     <header
       className={cn(
-        "relative flex min-h-[200px] items-center overflow-hidden bg-gradient-to-r from-wma-darkTeal to-wma-teal sm:bg-wma-darkTeal",
+        "relative flex min-h-[200px] items-center overflow-hidden",
+        "before:absolute before:inset-0 before:bg-black before:bg-opacity-50 before:z-0 sm:before:hidden", // Dark overlay for mobile only
         "mb-8 sm:mb-10 md:mb-12 lg:mb-16",
         className
       )}
+      style={{
+        backgroundImage: `url(${config.imageSrc})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
     >
+      <div className="absolute inset-0 bg-gradient-to-r from-wma-darkTeal to-wma-teal sm:hidden opacity-70" />
       <HeaderGroup>
         <HeaderText
           title={config.title}

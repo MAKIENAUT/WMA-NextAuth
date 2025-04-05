@@ -3,19 +3,16 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
-import { Menu, Sheet } from "lucide-react";
+import { Menu } from "lucide-react"; // Removed Sheet from lucide-react import
 import { useIsMobile } from "@/app/hooks/use-mobile";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { cn } from "@/app/lib/utils";
-import { SheetContent } from "./sheet";
+import { Sheet, SheetContent } from "./sheet"; // Import Sheet from your local components
 import { Button } from "./button";
 import { Input } from "./input";
 import { Separator } from "./separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 import { Skeleton } from "./skeleton";
-
-
-
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -192,7 +189,7 @@ const Sidebar = React.forwardRef<
 
     if (isMobile) {
       return (
-        <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+        <Sheet open={openMobile} onOpenChange={setOpenMobile}>
           <SheetContent
             data-sidebar="sidebar"
             data-mobile="true"
@@ -203,6 +200,7 @@ const Sidebar = React.forwardRef<
               } as React.CSSProperties
             }
             side={side}
+            {...props}
           >
             <div className="flex h-full w-full flex-col">{children}</div>
           </SheetContent>
@@ -277,11 +275,14 @@ const SidebarTrigger = React.forwardRef<
         }}
         {...props}
       >
-        <Menu />
+        <Menu className="size-4" />
         <span className="sr-only">Toggle Menu</span>
       </Button>
     );
   }
+
+  // Return null or some other fallback for non-mobile
+  return null;
 });
 SidebarTrigger.displayName = "SidebarTrigger";
 
