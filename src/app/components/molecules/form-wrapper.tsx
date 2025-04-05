@@ -8,7 +8,7 @@ export default function FormWrapper({
   onSubmit: FormEventHandler<HTMLFormElement>;
 }) {
   return (
-    <form onSubmit={onSubmit} className="flex w-full flex-col gap-6">
+    <form onSubmit={onSubmit} className="flex w-full flex-col gap-4 mb-4">
       {children}
     </form>
   );
