@@ -1,4 +1,3 @@
-// src/app/protected-content/page.tsx
 "use client";
 
 import { useSession } from "next-auth/react";

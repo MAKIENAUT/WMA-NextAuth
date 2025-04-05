@@ -74,6 +74,11 @@ const Carousel = React.forwardRef<
       (index: number) => {
         if (!api) return;
         api.scrollTo(index);
+
+        // Add a small delay to recalculate heights after content changes
+        setTimeout(() => {
+          api.reInit();
+        }, 50);
       },
       [api]
     );
@@ -134,6 +139,16 @@ const Carousel = React.forwardRef<
       onInit(api);
       onSelect(api);
       api.on("reInit", onInit).on("reInit", onSelect).on("select", onSelect);
+
+      // Handle window resize to recalculate carousel height
+      const handleResize = () => {
+        api.reInit();
+      };
+
+      window.addEventListener("resize", handleResize);
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
     }, [api, onInit, onSelect]);
 
     return (
@@ -202,7 +217,8 @@ const CarouselItem = React.forwardRef<
       role="group"
       aria-roledescription="slide"
       className={cn(
-        "grid min-w-0 shrink-0 grow-0 basis-full auto-rows-max gap-4 p-4 sm:grid-cols-2 md:pt-3 lg:grid-cols-3 xl:pt-6",
+        "min-w-0 shrink-0 grow-0 basis-full",
+        "flex flex-wrap justify-start items-start h-fit gap-6 p-4",
         orientation === "horizontal" ? "" : "",
         className
       )}
