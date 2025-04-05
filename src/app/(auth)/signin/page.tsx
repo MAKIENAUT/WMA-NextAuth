@@ -1,50 +1,12 @@
-// src/app/signin/page.tsx
-"use client";
 
-import React from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import Link from "next/link";
-import { Button } from "@/app/components/atoms/ui/button";
-import FormContent from "@/app/components/molecules/form-content";
-import FormTitle from "@/app/components/molecules/form-title";
-import FormWrapper from "@/app/components/molecules/form-wrapper";
-import InputGroup from "@/app/components/molecules/input-group";
-import FormFooter from "@/app/components/molecules/form-footer";
+import LoginForm from "@/app/components/organisms/login-form";
+import { Metadata } from "next";
 
-export default function SignIn() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+export const metadata: Metadata = {
+  title: "Login | WMA",
+  description: "",
+};
 
-  const handleGoogleSignIn = async () => {
-    setIsLoading(true);
-    await signIn("google", { callbackUrl: "/" });
-  };
-
-  return (
-    <>
-      <FormContent>
-        <FormTitle title="Sign In" />
-        <FormWrapper
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleGoogleSignIn();
-          }}
-        >
-          <InputGroup>
-            <Button
-              type="submit"
-              variant="secondary"
-              disabled={isLoading}
-              className="w-full"
-            >
-              {isLoading ? "Loading..." : "Sign in with Google"}
-            </Button>
-          </InputGroup>
-        </FormWrapper>
-      </FormContent>
-      <FormFooter variant="login" />
-    </>
-  );
+export default function LoginPage() {
+  return <LoginForm />;
 }

@@ -1,11 +1,11 @@
 import Image from "next/image";
-import { cn } from "@/lib/utils";
 import { Button } from "@/app/components/atoms/ui/button";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { preparedBlogData as blogs } from "@/data/blogData";
+import { cn } from "@/app/lib/utils";
+import { preparedBlogData as blogs } from "@/app/data/blogData";
 
 function getPostData(
   categoryName: string,

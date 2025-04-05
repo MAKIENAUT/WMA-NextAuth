@@ -1,13 +1,12 @@
-import { Metadata } from "next";
-// import { ChevronRight } from "lucide-react";
+import { NewsCard } from "@/app/components/molecules/news-card";
 import {
+  BlogsCarouselDots,
   Carousel,
   CarouselContent,
-  BlogsCarouselDots,
   CarouselItem,
 } from "@/app/components/organisms/carousel";
-import { preparedBlogData } from "@/data/blogData";
-import { NewsCard } from "@/app/components/molecules/news-card";
+import { preparedBlogData } from "@/app/data/blogData";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Blogs | WMA",
