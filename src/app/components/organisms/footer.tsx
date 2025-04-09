@@ -3,8 +3,8 @@ import { ReactNode } from "react";
 import { Button } from "../atoms/ui/button";
 import Link from "next/link";
 import { cn } from "@/app/lib/utils";
-import Instagram from "../../../../public/instagram";
-import Facebook from "../../../../public/facebook";
+import Instagram from "../../../../public/Footer-Images/instagram";
+import Facebook from "../../../../public/Footer-Images/facebook";
 
 function FooterGroup({
   children,
@@ -30,10 +30,10 @@ function FooterLogos() {
     },
     {
       alt: "DepEd logo",
-      src: "/us-deped-logo.svg",
+      src: "/Footer-Images/us-deped-logo.svg",
       className: "bg-white p-2 rounded",
     },
-    { alt: "DOL logo", src: "/DOL-logo.svg", className: "" },
+    { alt: "DOL logo", src: "/Footer-Images/DOL-logo.svg", className: "" },
   ];
 
   return (
