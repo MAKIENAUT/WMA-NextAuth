@@ -1,8 +1,10 @@
 import NextAuth from 'next-auth';
 import type { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import clientPromise from '@/app/lib/mongodb';
+import { compare } from 'bcrypt';
 
 const getAllowedEmails = (): string[] => {
   const emailsStr = process.env.ALLOWED_EMAILS || '';
@@ -28,6 +30,49 @@ export const authOptions: NextAuthOptions = {
         };
       },
     }),
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials, req) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Please enter both email and password');
+        }
+        
+        const client = await clientPromise;
+        const db = client.db(process.env.MONGODB_DATABASE);
+        
+        const user = await db.collection('users').findOne({
+          email: credentials.email
+        });
+        
+        if (!user) {
+          throw new Error('Invalid email or password');
+        }
+        
+        // Verify password using bcrypt
+        const isPasswordValid = await compare(credentials.password, user.password);
+        
+        if (!isPasswordValid) {
+          throw new Error('Invalid email or password');
+        }
+        
+        // Check if email is verified
+        if (!user.emailVerified) {
+          throw new Error('Please verify your email before logging in');
+        }
+        
+        return {
+          id: user._id.toString(),
+          name: user.username || user.name,
+          email: user.email,
+          role: user.role || 'user',
+          isAllowedDashboard: user.isAllowedDashboard || false
+        };
+      }
+    })
   ],
   pages: {
     signIn: '/auth/signin',
@@ -36,6 +81,11 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile }) {
+      // Skip email restriction for credentials login
+      if (account?.provider === 'credentials') {
+        return true;
+      }
+      
       const allowedEmails = getAllowedEmails();
       if (allowedEmails.length > 0 && user.email) {
         return allowedEmails.includes(user.email.toLowerCase());
@@ -46,8 +96,8 @@ export const authOptions: NextAuthOptions = {
       // Transfer properties from the token to the session
       if (session.user) {
         session.user.id = token.sub;
-        session.user.role = token.role;
-        session.user.isAllowedDashboard = token.isAllowedDashboard;
+        session.user.role = token.role as string;
+        session.user.isAllowedDashboard = token.isAllowedDashboard as boolean;
       }
       return session;
     },
