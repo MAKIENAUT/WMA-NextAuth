@@ -1,4 +1,3 @@
-// src/app/components/organisms/signup-form.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -26,6 +25,7 @@ export default function SignUpForm() {
     otp: "",
     acceptTerms: false,
   });
+  const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -35,34 +35,112 @@ export default function SignUpForm() {
     }));
   };
 
+  const sendOtp = async () => {
+    try {
+      const response = await fetch('/api/send-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: formData.email }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to send OTP');
+      }
+
+      setStep("otp");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to send OTP');
+      console.error('OTP sending error:', err);
+    }
+  };
+
+  const verifyOtp = async () => {
+    try {
+      const response = await fetch('/api/verify-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          email: formData.email,
+          otp: formData.otp 
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Invalid OTP');
+      }
+
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to verify OTP');
+      console.error('OTP verification error:', err);
+      return false;
+    }
+  };
+
+  const registerUser = async () => {
+    try {
+      const response = await fetch('/api/register', {  // Changed from '/api/auth/signup'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          emailVerified: true, // Set to true after successful OTP verification
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Registration failed');
+      }
+  
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed');
+      console.error('Registration error:', err);
+      return false;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
 
     try {
       // Basic validation
       if (formData.password !== formData.confirmPassword) {
-        alert("Passwords don't match!");
+        setError("Passwords don't match!");
         return;
       }
 
       if (!formData.acceptTerms) {
-        alert("You must accept the terms and conditions");
+        setError("You must accept the terms and conditions");
         return;
       }
 
-      // First step - submit form data to your API
+      // First step - submit form data and send OTP
       if (step === "form") {
-        // Here you would typically call your API to send OTP
-        console.log("Form data submitted:", formData);
-        setStep("otp");
+        await sendOtp();
       }
-      // Second step - verify OTP
+      // Second step - verify OTP and register user
       else if (step === "otp") {
-        // Verify OTP with your backend
-        console.log("OTP submitted:", formData.otp);
-        // On success:
-        router.push("/");
+        const isOtpValid = await verifyOtp();
+        if (!isOtpValid) return;
+
+        const isRegistered = await registerUser();
+        if (isRegistered) {
+          router.push("/");
+        }
       }
     } catch (error) {
       console.error("Signup error:", error);
@@ -82,6 +160,11 @@ export default function SignUpForm() {
         <FormTitle
           title={step === "form" ? "Create Account" : "Verify Email"}
         />
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+            {error}
+          </div>
+        )}
         <FormWrapper onSubmit={handleSubmit}>
           {step === "form" ? (
             <>
