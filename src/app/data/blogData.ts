@@ -23,7 +23,7 @@ export const blogData: BlogCategory[] = [
         url: "important-i129f-form-updates-2025",
         title: "Important Updates to Form I-129F: What Fiancé(e) Visa Applicants Need to Know",
         image: {
-          src: "/i129f-form.png",
+          src: "/Blog-Images/i129f-form.png",
           position: "object-[center_center]",
           alt: "USCIS I-129F Fiancé(e) form",
         },
@@ -53,7 +53,7 @@ export const blogData: BlogCategory[] = [
         title:
           "Navigating I-485 Supplement J: What Every Immigrant Worker Needs to Know",
         image: {
-          src: "/i-485.png",
+          src: "/Blog-Images/i-485.png",
           position: "object-[center_center]",
           alt: "USCIS immigration forms",
         },
@@ -82,7 +82,7 @@ export const blogData: BlogCategory[] = [
         url: "uscis-form-editions-2025",
         title: "USCIS New Form Editions – Form G-325A & Form I-134",
         image: {
-          src: "/uscis-form-editions-2025.png",
+          src: "/Blog-Images/uscis-form-editions-2025.png",
           position: "object-[center_center]",
           alt: "USCIS forms",
         },
@@ -100,7 +100,7 @@ export const blogData: BlogCategory[] = [
         url: "fy-2026-h1b-registration",
         title: "USCIS Announces FY 2026 H-1B Registration Details",
         image: {
-          src: "/h1b.jpg",
+          src: "/Blog-Images/h1b.jpg",
           position: "object-[center_center]",
           alt: "H-1B visa registration",
         },
@@ -118,7 +118,7 @@ export const blogData: BlogCategory[] = [
         url: "uscis-waives-COVID-19-vaccination-requirement-for-adjustment-of-status-applicants",
         title: "USCIS Waives COVID-19 Vaccination Requirement",
         image: {
-          src: "/uscis-covid-19-vaccination.png",
+          src: "/Blog-Images/uscis-covid-19-vaccination.png",
           position: "object-center",
           alt: "USCIS news update",
         },
@@ -132,7 +132,7 @@ export const blogData: BlogCategory[] = [
         url: "uscis-form-updates-2025",
         title: "USCIS Form Updates 2025: What You Need to Know",
         image: {
-          src: "/forms.png",
+          src: "/Blog-Images/forms.png",
           position: "object-[center_center]",
           alt: "USCIS forms",
         },
@@ -156,7 +156,7 @@ export const blogData: BlogCategory[] = [
         url: "fy-2026-h1b-registration-full",
         title: "Full Details: USCIS FY 2026 H-1B Registration Process Unveiled",
         image: {
-          src: "/h1b.jpg",
+          src: "/Blog-Images/h1b.jpg",
           position: "object-[center_center]",
           alt: "H-1B visa registration",
         },
@@ -174,7 +174,7 @@ export const blogData: BlogCategory[] = [
         url: "uscis-announces-new-form-editions",
         title: "USCIS Announces New Form Editions – What You Need to Know",
         image: {
-          src: "/uscis-form-editions-2025.png",
+          src: "/Blog-Images/uscis-form-editions-2025.png",
           position: "object-[center_center]",
           alt: "USCIS forms",
         },
@@ -198,7 +198,7 @@ export const blogData: BlogCategory[] = [
         title:
           "Open Doors Report: A Record High Number of International Students",
         image: {
-          src: "/students.jpg",
+          src: "/Blog-Images/students.jpg",
           position: "object-[center_center]",
           alt: "international students",
         },
@@ -217,7 +217,7 @@ export const blogData: BlogCategory[] = [
         url: "addressing-us-teacher-shortage",
         title: "Addressing US Teacher Shortage: A Call to Action",
         image: {
-          src: "/teacher.jpg",
+          src: "/Blog-Images/teacher.jpg",
           position: "object-[center_-3.5rem]",
           alt: "teacher",
         },

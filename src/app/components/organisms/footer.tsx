@@ -22,10 +22,10 @@ function FooterGroup({
 
 function FooterLogos() {
   const LOGOS = [
-    { alt: "WMC logo", src: "/wmc-logo.png", className: "" },
+    { alt: "WMC logo", src: "/Footer-Images/wmc-logo.png", className: "" },
     {
       alt: "USCIS logo",
-      src: "/USCIS-logo.png",
+      src: "/Footer-Images/uscis-logo.png",
       className: "bg-white p-2 rounded",
     },
     {
@@ -33,7 +33,7 @@ function FooterLogos() {
       src: "/Footer-Images/us-deped-logo.svg",
       className: "bg-white p-2 rounded",
     },
-    { alt: "DOL logo", src: "/Footer-Images/DOL-logo.svg", className: "" },
+    { alt: "DOL logo", src: "/Footer-Images/dol-logo.svg", className: "" },
   ];
 
   return (

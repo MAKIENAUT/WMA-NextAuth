@@ -13,11 +13,13 @@ import { Input } from "@/app/components/atoms/ui/input";
 import { Label } from "@/app/components/atoms/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react"; // Import eye icons
 
 export default function LoginForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -36,7 +38,6 @@ export default function LoginForm() {
     await signIn("google", { callbackUrl: "/" });
   };
 
-  // In the handleCredentialsSignIn function in login-form.tsx
   const handleCredentialsSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -63,6 +64,11 @@ export default function LoginForm() {
       setError("An unexpected error occurred. Please try again.");
       setIsLoading(false);
     }
+  };
+
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -97,14 +103,23 @@ export default function LoginForm() {
 
           <InputGroup>
             <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </InputGroup>
 
           <div className="text-right mb-4">

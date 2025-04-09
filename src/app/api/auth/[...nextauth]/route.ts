@@ -27,6 +27,7 @@ export const authOptions: NextAuthOptions = {
           image: profile.picture,
           role: 'user',
           isAllowedDashboard: false,
+          isTemporaryPassword: false,
         };
       },
     }),
@@ -40,36 +41,37 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Please enter both email and password');
         }
-        
+
         const client = await clientPromise;
         const db = client.db(process.env.MONGODB_DATABASE);
-        
+
         const user = await db.collection('users').findOne({
           email: credentials.email
         });
-        
+
         if (!user) {
           throw new Error('Invalid email or password');
         }
-        
+
         // Verify password using bcrypt
         const isPasswordValid = await compare(credentials.password, user.password);
-        
+
         if (!isPasswordValid) {
           throw new Error('Invalid email or password');
         }
-        
+
         // Check if email is verified
         if (!user.emailVerified) {
           throw new Error('Please verify your email before logging in');
         }
-        
+
         return {
           id: user._id.toString(),
           name: user.username || user.name,
           email: user.email,
           role: user.role || 'user',
-          isAllowedDashboard: user.isAllowedDashboard || false
+          isAllowedDashboard: user.isAllowedDashboard || false,
+          isTemporaryPassword: user.isTemporaryPassword || false
         };
       }
     })
@@ -85,7 +87,7 @@ export const authOptions: NextAuthOptions = {
       if (account?.provider === 'credentials') {
         return true;
       }
-      
+
       const allowedEmails = getAllowedEmails();
       if (allowedEmails.length > 0 && user.email) {
         return allowedEmails.includes(user.email.toLowerCase());
@@ -98,6 +100,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.sub;
         session.user.role = token.role as string;
         session.user.isAllowedDashboard = token.isAllowedDashboard as boolean;
+        session.user.isTemporaryPassword = token.isTemporaryPassword as boolean;
       }
       return session;
     },
@@ -107,6 +110,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = user.role;
         token.isAllowedDashboard = user.isAllowedDashboard;
+        token.isTemporaryPassword = user.isTemporaryPassword;
       }
       return token;
     },

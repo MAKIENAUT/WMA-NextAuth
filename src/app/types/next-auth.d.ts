@@ -9,6 +9,7 @@ declare module "next-auth" {
     id?: string;
     role?: string;
     isAllowedDashboard?: boolean;
+    isTemporaryPassword?: boolean;
   }
 
   /**
@@ -22,6 +23,7 @@ declare module "next-auth" {
       image?: string | null;
       role?: string;
       isAllowedDashboard?: boolean;
+      isTemporaryPassword?: boolean;
     }
   }
 }
@@ -34,5 +36,6 @@ declare module "next-auth/jwt" {
     id?: string;
     role?: string;
     isAllowedDashboard?: boolean;
+    isTemporaryPassword?: boolean;
   }
 }

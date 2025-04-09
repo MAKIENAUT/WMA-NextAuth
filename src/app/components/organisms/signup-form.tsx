@@ -12,11 +12,14 @@ import { Input } from "@/app/components/atoms/ui/input";
 import { Label } from "@/app/components/atoms/ui/label";
 import { Checkbox } from "@/app/components/atoms/ui/checkbox";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react"; // Import eye icons
 
 export default function SignUpForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState<"form" | "otp">("form");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -26,6 +29,10 @@ export default function SignUpForm() {
     acceptTerms: false,
   });
   const [error, setError] = useState("");
+
+  // Password regex pattern
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -37,58 +44,58 @@ export default function SignUpForm() {
 
   const sendOtp = async () => {
     try {
-      const response = await fetch('/api/send-otp', {
-        method: 'POST',
+      const response = await fetch("/api/send-otp", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email: formData.email }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to send OTP');
+        throw new Error(errorData.error || "Failed to send OTP");
       }
 
       setStep("otp");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to send OTP');
-      console.error('OTP sending error:', err);
+      setError(err instanceof Error ? err.message : "Failed to send OTP");
+      console.error("OTP sending error:", err);
     }
   };
 
   const verifyOtp = async () => {
     try {
-      const response = await fetch('/api/verify-otp', {
-        method: 'POST',
+      const response = await fetch("/api/verify-otp", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           email: formData.email,
-          otp: formData.otp 
+          otp: formData.otp,
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Invalid OTP');
+        throw new Error(errorData.error || "Invalid OTP");
       }
 
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to verify OTP');
-      console.error('OTP verification error:', err);
+      setError(err instanceof Error ? err.message : "Failed to verify OTP");
+      console.error("OTP verification error:", err);
       return false;
     }
   };
 
   const registerUser = async () => {
     try {
-      const response = await fetch('/api/register', {  // Changed from '/api/auth/signup'
-        method: 'POST',
+      const response = await fetch("/api/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username: formData.username,
@@ -97,16 +104,16 @@ export default function SignUpForm() {
           emailVerified: true, // Set to true after successful OTP verification
         }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Registration failed');
+        throw new Error(errorData.error || "Registration failed");
       }
-  
+
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed');
-      console.error('Registration error:', err);
+      setError(err instanceof Error ? err.message : "Registration failed");
+      console.error("Registration error:", err);
       return false;
     }
   };
@@ -120,11 +127,22 @@ export default function SignUpForm() {
       // Basic validation
       if (formData.password !== formData.confirmPassword) {
         setError("Passwords don't match!");
+        setIsLoading(false);
+        return;
+      }
+
+      // Validate password against regex pattern
+      if (!passwordRegex.test(formData.password)) {
+        setError(
+          "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)"
+        );
+        setIsLoading(false);
         return;
       }
 
       if (!formData.acceptTerms) {
         setError("You must accept the terms and conditions");
+        setIsLoading(false);
         return;
       }
 
@@ -152,7 +170,10 @@ export default function SignUpForm() {
   return (
     <div className="w-full max-w-md mx-auto py-4 px-4 overflow-y-auto max-h-screen">
       <div className="mb-4 text-center">
-        <Link href="/" className="text-sm text-muted-foreground hover:underline">
+        <Link
+          href="/"
+          className="text-sm text-muted-foreground hover:underline"
+        >
           ← Back to Home
         </Link>
       </div>
@@ -194,26 +215,53 @@ export default function SignUpForm() {
 
               <InputGroup>
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Password must be at least 8 characters and contain at least
+                  one uppercase letter, one lowercase letter, one number, and
+                  one special character (@$!%*?&).
+                </p>
               </InputGroup>
 
               <InputGroup>
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff size={16} />
+                    ) : (
+                      <Eye size={16} />
+                    )}
+                  </button>
+                </div>
               </InputGroup>
 
               <div className="flex items-center space-x-2">

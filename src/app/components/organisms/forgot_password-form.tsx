@@ -24,10 +24,10 @@ export default function ForgotPasswordForm() {
     setSuccess(false);
 
     try {
-      const response = await fetch('/api/forgot-password', {
-        method: 'POST',
+      const response = await fetch("/api/forgot-password", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
       });
@@ -35,13 +35,15 @@ export default function ForgotPasswordForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to process request');
+        throw new Error(data.error || "Failed to process request");
       }
 
       setSuccess(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
-      console.error('Password reset request error:', err);
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred"
+      );
+      console.error("Password reset request error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -50,35 +52,44 @@ export default function ForgotPasswordForm() {
   return (
     <div className="w-full max-w-md mx-auto py-4 px-4 overflow-y-auto">
       <div className="mb-4 text-center">
-        <Link href="/signin" className="text-sm text-muted-foreground hover:underline">
+        <Link
+          href="/signin"
+          className="text-sm text-muted-foreground hover:underline"
+        >
           ← Back to Sign In
         </Link>
       </div>
       <FormContent>
         <FormTitle title="Forgot Password" />
-        
+
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
             {error}
           </div>
         )}
-        
+
         {success ? (
           <div className="mb-4 p-4 bg-green-100 text-green-700 rounded-md">
-            <h3 className="font-medium">Reset Link Sent!</h3>
+            <h3 className="font-medium">Recovery Options Sent!</h3>
             <p className="text-sm mt-1">
-              If an account exists with the email {email}, we've sent a password reset link.
+              If an account exists with the email {email}, we've sent you:
             </p>
+            <ul className="text-sm mt-2 list-disc pl-5">
+              <li>A password reset link</li>
+              <li>A temporary password</li>
+            </ul>
             <p className="text-sm mt-3">
-              Please check your email and follow the instructions to reset your password.
+              Please check your email and follow the instructions to regain
+              access to your account.
             </p>
           </div>
         ) : (
           <FormWrapper onSubmit={handleSubmit}>
             <p className="text-sm text-muted-foreground mb-4">
-              Enter your email address below and we'll send you a link to reset your password.
+              Enter your email address below and we'll send you options to reset
+              your password.
             </p>
-            
+
             <InputGroup>
               <Label htmlFor="email">Email</Label>
               <Input
@@ -99,7 +110,7 @@ export default function ForgotPasswordForm() {
                 disabled={isLoading}
                 className="w-full"
               >
-                {isLoading ? "Sending..." : "Send Reset Link"}
+                {isLoading ? "Sending..." : "Send Recovery Options"}
               </Button>
             </InputGroup>
           </FormWrapper>
