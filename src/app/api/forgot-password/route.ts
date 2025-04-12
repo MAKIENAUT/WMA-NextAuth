@@ -1,6 +1,6 @@
 // app/api/forgot-password/route.ts
 import { NextResponse } from 'next/server';
-import clientPromise from '@/app/lib/mongodb';
+import clientPromise from '@/lib/mongodb';
 import { randomBytes } from 'crypto';
 import { Resend } from 'resend';
 import { hash } from 'bcrypt';
@@ -98,7 +98,7 @@ export async function POST(request: Request) {
       to: [email],
       subject: 'Password Reset Request',
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">F
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <h2>Reset Your Password</h2>
           <p>Hello,</p>
           <p>We received a request to reset your password. You have two options:</p>

@@ -3,7 +3,7 @@
 
 import React from "react";
 import { useSearchParams } from "next/navigation";
-import LoginForm from "@/app/components/organisms/login-form";
+import LoginForm from "@/components/organisms/login-form";
 
 export default function SignInPage() {
   const searchParams = useSearchParams();

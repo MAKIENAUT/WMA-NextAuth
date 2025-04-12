@@ -3,7 +3,7 @@ import type { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
-import clientPromise from '@/app/lib/mongodb';
+import clientPromise from '@/lib/mongodb';
 import { compare } from 'bcrypt';
 
 const getAllowedEmails = (): string[] => {

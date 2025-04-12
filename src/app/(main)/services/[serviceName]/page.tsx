@@ -1,7 +1,7 @@
 import { Metadata } from "next";
-import HeroTemplate, { hero_items } from "@/app/components/templates/hero-template";
+import HeroTemplate, { hero_items } from "@/components/templates/hero-template";
 import { notFound } from "next/navigation";
-import IndividualServiceTemplate from "@/app/components/templates/individual-service-template";
+import IndividualServiceTemplate from "@/components/templates/individual-service-template";
 
 const individual_services = {
   "study-and-exchange": {

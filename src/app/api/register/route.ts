@@ -1,6 +1,6 @@
 // app/api/register/route.ts
 import { NextResponse } from 'next/server';
-import clientPromise from '@/app/lib/mongodb';
+import clientPromise from '@/lib/mongodb';
 import { hash } from 'bcrypt';
 
 export async function POST(request: Request) {

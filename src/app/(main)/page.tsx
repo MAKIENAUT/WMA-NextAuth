@@ -1,10 +1,10 @@
 import Image from "next/image";
-import ContentWrapper from "../components/organisms/content-wrapper";
-import SectionWrapper from "../components/organisms/section-wrapper";
-import HeroTemplate from "../components/templates/hero-template";
-import ServiceTemplate from "../components/templates/service-template";
-import PromiseSection from "../components/organisms/promise-section";
-import EasyApplySection from "../components/organisms/easy-apply-section";
+import ContentWrapper from "../../components/organisms/content-wrapper";
+import SectionWrapper from "../../components/organisms/section-wrapper";
+import HeroTemplate from "../../components/templates/hero-template";
+import ServiceTemplate from "../../components/templates/service-template";
+import PromiseSection from "../../components/organisms/promise-section";
+import EasyApplySection from "../../components/organisms/easy-apply-section";
 
 
 function StatementSection() {

@@ -1,4 +1,4 @@
-import ServiceTemplate from "@/app/components/templates/service-template";
+import ServiceTemplate from "@/components/templates/service-template";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

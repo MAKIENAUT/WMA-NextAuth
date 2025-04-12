@@ -3,66 +3,89 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-// Define protected routes that require authentication
+// Protected routes that require authentication
 const PROTECTED_ROUTES = [
   '/forms',
   '/profile',
   '/protected-content',
 ];
 
+// Admin-only routes
+const ADMIN_ROUTES = [
+  '/admin',
+];
+
+// Dashboard routes that require special permission
+const DASHBOARD_ROUTES = [
+  '/dashboard',
+];
+
 export async function middleware(request: NextRequest) {
-  const token = await getToken({ req: request });
+  const token = await getToken({ 
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET 
+  });
+  
   const isAuthenticated = !!token;
+  const pathname = request.nextUrl.pathname;
 
-  // Define route types - updated for new route structure
-  const isDashboardRoute = request.nextUrl.pathname.startsWith('/dashboard');
-  const isSigninRoute = request.nextUrl.pathname.startsWith('/signin');
-  const isSignoutRoute = request.nextUrl.pathname.startsWith('/signout');
-  const isSignupRoute = request.nextUrl.pathname.startsWith('/signup');
-  const isAuthRoute = isSigninRoute || isSignoutRoute || isSignupRoute;
-
-  // Check if current path is in protected routes
-  const isProtectedRoute = PROTECTED_ROUTES.some(route => 
-    request.nextUrl.pathname.startsWith(route)
+  // Check route types
+  const isAdminRoute = ADMIN_ROUTES.some(route => pathname.startsWith(route));
+  const isDashboardRoute = DASHBOARD_ROUTES.some(route => pathname.startsWith(route));
+  const isAuthRoute = ['/signin', '/signup', '/forgot-password', '/reset-password'].some(
+    route => pathname.startsWith(route)
   );
+  const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route));
 
-  // Dashboard routes need special permission
+  // Handle admin routes
+  if (isAdminRoute) {
+    if (!isAuthenticated || token.role !== 'admin') {
+      return NextResponse.redirect(new URL('/unauthorized', request.url));
+    }
+  }
+
+  // Handle dashboard routes
   if (isDashboardRoute) {
     if (!isAuthenticated) {
-      const callbackUrl = encodeURIComponent(request.nextUrl.pathname);
+      const callbackUrl = encodeURIComponent(pathname);
       return NextResponse.redirect(new URL(`/signin?callbackUrl=${callbackUrl}`, request.url));
     }
     
-    // User is authenticated but check if their email is allowed for dashboard
     if (!token.isAllowedDashboard) {
       return NextResponse.redirect(new URL('/unauthorized', request.url));
     }
   }
 
-  // Protected routes just need authentication
+  // Handle other protected routes
   if (isProtectedRoute && !isAuthenticated) {
-    const callbackUrl = encodeURIComponent(request.nextUrl.pathname);
+    const callbackUrl = encodeURIComponent(pathname);
     return NextResponse.redirect(new URL(`/signin?callbackUrl=${callbackUrl}`, request.url));
   }
 
   // Redirect authenticated users away from auth pages
-  if (isAuthRoute && isAuthenticated && !isSignoutRoute) {
+  if (isAuthRoute && isAuthenticated) {
+    // Allow signout even if authenticated
+    if (pathname.startsWith('/signout')) {
+      return NextResponse.next();
+    }
     return NextResponse.redirect(new URL('/', request.url));
   }
 
   return NextResponse.next();
 }
 
-// Updated matcher patterns to include new protected routes
 export const config = {
   matcher: [
+    '/admin/:path*',
     '/dashboard/:path*',
     '/forms/:path*',
     '/profile/:path*',
     '/protected-content/:path*',
     '/signin',
-    '/signout',
     '/signup',
+    '/signout',
+    '/forgot-password',
+    '/reset-password',
     '/unauthorized'
   ],
 };

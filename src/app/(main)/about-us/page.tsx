@@ -1,5 +1,5 @@
-import ClientImage from "@/app/components/atoms/ui/client-image";
-import { orelega_one } from "@/app/lib/fonts";
+import ClientImage from "@/components/atoms/ui/client-image";
+import { orelega_one } from "@/lib/fonts";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

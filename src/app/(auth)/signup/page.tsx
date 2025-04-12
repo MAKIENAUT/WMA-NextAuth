@@ -1,6 +1,6 @@
 // src/app/signup/page.tsx
 import { Metadata } from "next";
-import SignUpForm from "@/app/components/organisms/signup-form";
+import SignUpForm from "@/components/organisms/signup-form";
 
 export const metadata: Metadata = {
   title: "Sign Up | WMA",

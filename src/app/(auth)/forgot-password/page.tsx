@@ -1,5 +1,5 @@
 
-import ForgotPasswordForm from "@/app/components/organisms/forgot_password-form";
+import ForgotPasswordForm from "@/components/organisms/forgot_password-form";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

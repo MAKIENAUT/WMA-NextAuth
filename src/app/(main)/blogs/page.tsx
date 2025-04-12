@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useCallback, useState, useRef } from "react";
-import { NewsCard } from "@/app/components/molecules/news-card";
+import { NewsCard } from "@/components/molecules/news-card";
 import {
   BlogsCarouselDots,
   Carousel,
   CarouselContent,
   CarouselItem,
-} from "@/app/components/organisms/carousel";
-import { preparedBlogData } from "@/app/data/blogData";
+} from "@/components/organisms/carousel";
+import { preparedBlogData } from "@/data/blogData";
 
 export default function BlogsPage() {
   const [carouselApi, setCarouselApi] = useState<any>(null);

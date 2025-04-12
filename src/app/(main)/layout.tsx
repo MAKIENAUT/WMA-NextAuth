@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { SidebarProvider } from "../components/atoms/ui/sidebar";
-import Navbar from "../components/organisms/navbar";
-import Footer from "../components/organisms/footer";
+import { SidebarProvider } from "../../components/atoms/ui/sidebar";
+import Navbar from "../../components/organisms/navbar";
+import Footer from "../../components/organisms/footer";
 
 
 export const metadata: Metadata = {

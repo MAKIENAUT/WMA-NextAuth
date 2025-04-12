@@ -1,7 +1,7 @@
 // app/api/send-otp/route.ts
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import clientPromise from '@/app/lib/mongodb';
+import clientPromise from '@/lib/mongodb';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
