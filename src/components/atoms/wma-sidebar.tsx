@@ -11,7 +11,8 @@ import {
 } from "./ui/dropdown-menu";
 import Link from "next/link";
 import { Skeleton } from "./ui/skeleton";
-import { Sidebar,
+import {
+  Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
@@ -20,9 +21,11 @@ import { Sidebar,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar } from "./ui/sidebar";
+  useSidebar,
+} from "./ui/sidebar";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
+import { SheetTitle } from "./ui/sheet"; // Import SheetTitle
 
 interface WMASidebarProps {
   items: {
@@ -43,6 +46,8 @@ export default function WMASidebar({
   if (isMobile) {
     return (
       <Sidebar side="right">
+        {/* Add SheetTitle for accessibility */}
+        <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
         <SidebarHeader>
           <Button variant="ghost" size="icon" onClick={toggleSidebar}>
             <X />
@@ -94,7 +99,8 @@ export default function WMASidebar({
                         />
                       ) : (
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-sm font-medium">
-                          {session.user?.name?.charAt(0) || session.user?.email?.charAt(0)}
+                          {session.user?.name?.charAt(0) ||
+                            session.user?.email?.charAt(0)}
                         </div>
                       )}
                       <ChevronUp className="ml-auto h-4 w-4" />

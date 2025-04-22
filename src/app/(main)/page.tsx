@@ -31,7 +31,7 @@ function StatementImage() {
       <div className="relative z-10 aspect-[1/1] w-full">
         <Image
           alt="Image of a woman"
-          src="/statement-image.jpg"
+          src="/Page-Images/statement-image.jpg"
           fill
           className="rounded-sm object-cover object-[70%_0]"
           sizes="(max-width: 768px) 50vw, (max-width: 1280px): 33vw"

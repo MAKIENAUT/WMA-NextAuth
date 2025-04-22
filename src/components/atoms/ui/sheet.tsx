@@ -4,7 +4,8 @@ import * as React from "react";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import * as DialogPrimitive from "@radix-ui/react-dialog"
+import { cn } from "@/lib/utils"
 
 const Sheet = SheetPrimitive.Root;
 
@@ -50,12 +51,31 @@ const sheetVariants = cva(
 
 interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
-    VariantProps<typeof sheetVariants> {}
+    VariantProps<typeof sheetVariants> {
+  hideTitle?: boolean;
+}
+
+// Create a VisuallyHidden component to use for accessibility
+const VisuallyHidden = ({
+  children,
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLSpanElement>) => {
+  return (
+    <span
+      className={cn("sr-only", className)}
+      {...props}
+    >
+      {children}
+    </span>
+  );
+};
+VisuallyHidden.displayName = "VisuallyHidden";
 
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProps
->(({ side = "right", className, children, ...props }, ref) => (
+>(({ side = "right", className, children, hideTitle = false, ...props }, ref) => (
   <SheetPortal>
     <SheetOverlay />
     <SheetPrimitive.Content
@@ -63,6 +83,11 @@ const SheetContent = React.forwardRef<
       className={cn(sheetVariants({ side }), className)}
       {...props}
     >
+      {hideTitle && (
+        <SheetPrimitive.Title className="sr-only">
+          Sheet Dialog
+        </SheetPrimitive.Title>
+      )}
       {children}
       <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-zinc-100 dark:ring-offset-zinc-950 dark:focus:ring-zinc-300 dark:data-[state=open]:bg-zinc-800">
         <X className="h-4 w-4" />
@@ -102,19 +127,16 @@ const SheetFooter = ({
 SheetFooter.displayName = "SheetFooter";
 
 const SheetTitle = React.forwardRef<
-  React.ElementRef<typeof SheetPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title>
+  React.ElementRef<typeof DialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
 >(({ className, ...props }, ref) => (
-  <SheetPrimitive.Title
+  <DialogPrimitive.Title
     ref={ref}
-    className={cn(
-      "text-lg font-semibold text-zinc-950 dark:text-zinc-50",
-      className
-    )}
+    className={cn("text-lg font-semibold text-foreground", className)}
     {...props}
   />
-));
-SheetTitle.displayName = SheetPrimitive.Title.displayName;
+))
+SheetTitle.displayName = "SheetTitle"
 
 const SheetDescription = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Description>,
@@ -139,4 +161,5 @@ export {
   SheetFooter,
   SheetTitle,
   SheetDescription,
+  VisuallyHidden,
 };

@@ -25,10 +25,10 @@ const menu_items = [
 
 export default function Navbar() {
   const { data: session, status } = useSession();
-  
+
   return (
     <>
-      <nav className="fixed top-0 z-50 flex w-screen items-center justify-between bg-white p-2 sm:px-8 sm:py-4 lg:max-h-20 xl:px-20">
+      <nav className="fixed top-0 z-50 flex w-full items-center justify-between bg-white px-4 py-2 sm:px-8 sm:py-4 lg:max-h-20 xl:px-20">
         <Button asChild variant="logo">
           <Link href="/">
             <Image
@@ -40,12 +40,16 @@ export default function Navbar() {
             />
           </Link>
         </Button>
-        <NavbarLinks
-          items={menu_items}
-          session={session}
-          isLoading={status === "loading"}
-        />
-        <SidebarTrigger />
+        <div className="flex items-center gap-4">
+          <NavbarLinks
+            items={menu_items}
+            session={session}
+            isLoading={status === "loading"}
+          />
+          <div className="md:hidden">
+            <SidebarTrigger />
+          </div>
+        </div>
       </nav>
       <WMASidebar
         items={menu_items}

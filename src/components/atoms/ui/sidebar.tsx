@@ -7,7 +7,8 @@ import { Menu } from "lucide-react"; // Removed Sheet from lucide-react import
 import { useIsMobile } from "@/hooks/use-mobile";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { cn } from "@/lib/utils";
-import { Sheet, SheetContent } from "./sheet"; // Import Sheet from your local components
+import { DialogTitle } from "@radix-ui/react-dialog"
+import { Sheet, SheetClose, SheetContent, SheetTitle } from "./sheet"
 import { Button } from "./button";
 import { Input } from "./input";
 import { Separator } from "./separator";
@@ -202,6 +203,8 @@ const Sidebar = React.forwardRef<
             side={side}
             {...props}
           >
+            {/* Add SheetTitle that can be visually hidden if needed */}
+            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
             <div className="flex h-full w-full flex-col">{children}</div>
           </SheetContent>
         </Sheet>
