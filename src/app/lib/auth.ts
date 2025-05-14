@@ -1,4 +1,5 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+// src/lib/auth.ts
+import { authOptions } from '@/lib/auth-config';
 import { getServerSession } from 'next-auth';
 import type { Session } from 'next-auth';
 
