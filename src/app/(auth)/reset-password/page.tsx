@@ -1,5 +1,5 @@
 // app/auth/reset-password/page.tsx
-import ResetPasswordForm from '@/app/components/organisms/reset_password-form';
+import ResetPasswordForm from '@/components/organisms/reset_password-form';
 import React from 'react';
 
 export const metadata = {

@@ -4,12 +4,12 @@
 import React from 'react';
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { Button } from "@/app/components/atoms/ui/button";
-import FormContent from "@/app/components/molecules/form-content";
-import FormTitle from "@/app/components/molecules/form-title";
-import InputGroup from "@/app/components/molecules/input-group";
-import FormFooter from "@/app/components/molecules/form-footer";
-import FormWrapper from '@/app/components/molecules/form-wrapper';
+import { Button } from "@/components/atoms/ui/button";
+import FormContent from "@/components/molecules/form-content";
+import FormTitle from "@/components/molecules/form-title";
+import InputGroup from "@/components/molecules/input-group";
+import FormFooter from "@/components/molecules/form-footer";
+import FormWrapper from '@/components/molecules/form-wrapper';
 
 export default function Unauthorized() {
   const { data: session } = useSession();

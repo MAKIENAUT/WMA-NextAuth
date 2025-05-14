@@ -1,7 +1,7 @@
 import { AuthProvider } from "@/providers/AuthProvider";
 import type { Metadata } from "next";
 import "./globals.css";
-import { dm_sans } from "./lib/fonts";
+import { dm_sans } from "../lib/fonts";
 
 export const metadata: Metadata = {
   title: "My App with NextAuth",
