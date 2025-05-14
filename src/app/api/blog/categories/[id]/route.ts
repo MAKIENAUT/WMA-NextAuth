@@ -5,15 +5,12 @@ import { ObjectId } from 'mongodb';
 
 // GET a single category by ID
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string | string[] } }
+  request: Request, { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Convert id to string if it's an array
-    const id = Array.isArray(params.id) ? params.id[0] : params.id;
-    
+    const id = Number((await params).id);
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DATABASE);
+    const db = client.db(process.env.MONGODB_DATABASE!);
     
     const category = await db.collection('categories').findOne({
       _id: new ObjectId(id)
@@ -39,14 +36,12 @@ export async function GET(
 // UPDATE a category
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string | string[] } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Convert id to string if it's an array
-    const id = Array.isArray(params.id) ? params.id[0] : params.id;
-    
+    const id  = (await params).id;
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DATABASE);
+    const db = client.db(process.env.MONGODB_DATABASE!);
     
     const body = await request.json();
     
@@ -79,14 +74,12 @@ export async function PUT(
 // DELETE a category
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string | string[] } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Convert id to string if it's an array
-    const id = Array.isArray(params.id) ? params.id[0] : params.id;
-    
+    const id  = (await params).id;
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DATABASE);
+    const db = client.db(process.env.MONGODB_DATABASE!);
     
     const result = await db.collection('categories').deleteOne({
       _id: new ObjectId(id)

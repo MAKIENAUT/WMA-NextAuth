@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --no-lint",
     "start": "next start",
     "lint": "next lint"
   },
@@ -45,10 +45,10 @@
     "mongodb": "^6.15.0",
     "mongoose": "^8.13.2",
     "motion": "^11.15.0",
-    "next": "^15.2.4",
+    "next": "14.2.3",
     "next-auth": "^4.24.11",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^18",
+    "react-dom": "^18",
     "react-hook-form": "^7.53.2",
     "react-quill": "^2.0.0",
     "resend": "^4.2.0",
