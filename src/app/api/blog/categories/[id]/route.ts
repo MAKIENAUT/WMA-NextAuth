@@ -6,14 +6,17 @@ import { ObjectId } from 'mongodb';
 // GET a single category by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string | string[] } }
 ) {
   try {
+    // Convert id to string if it's an array
+    const id = Array.isArray(params.id) ? params.id[0] : params.id;
+    
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE);
     
     const category = await db.collection('categories').findOne({
-      _id: new ObjectId(params.id)
+      _id: new ObjectId(id)
     });
     
     if (!category) {
@@ -36,16 +39,19 @@ export async function GET(
 // UPDATE a category
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string | string[] } }
 ) {
   try {
+    // Convert id to string if it's an array
+    const id = Array.isArray(params.id) ? params.id[0] : params.id;
+    
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE);
     
     const body = await request.json();
     
     const result = await db.collection('categories').updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: body }
     );
     
@@ -57,7 +63,7 @@ export async function PUT(
     }
     
     const updatedCategory = await db.collection('categories').findOne({
-      _id: new ObjectId(params.id)
+      _id: new ObjectId(id)
     });
     
     return NextResponse.json({ success: true, data: updatedCategory });
@@ -73,14 +79,17 @@ export async function PUT(
 // DELETE a category
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string | string[] } }
 ) {
   try {
+    // Convert id to string if it's an array
+    const id = Array.isArray(params.id) ? params.id[0] : params.id;
+    
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE);
     
     const result = await db.collection('categories').deleteOne({
-      _id: new ObjectId(params.id)
+      _id: new ObjectId(id)
     });
     
     if (result.deletedCount === 0) {
