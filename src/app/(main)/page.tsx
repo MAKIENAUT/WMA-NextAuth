@@ -1,10 +1,10 @@
 import Image from "next/image";
-import ContentWrapper from "../components/organisms/content-wrapper";
-import SectionWrapper from "../components/organisms/section-wrapper";
-import HeroTemplate from "../components/templates/hero-template";
-import ServiceTemplate from "../components/templates/service-template";
-import PromiseSection from "../components/organisms/promise-section";
-import EasyApplySection from "../components/organisms/easy-apply-section";
+import ContentWrapper from "../../components/organisms/content-wrapper";
+import SectionWrapper from "../../components/organisms/section-wrapper";
+import HeroTemplate from "../../components/templates/hero-template";
+import ServiceTemplate from "../../components/templates/service-template";
+import PromiseSection from "../../components/organisms/promise-section";
+import EasyApplySection from "../../components/organisms/easy-apply-section";
 
 
 function StatementSection() {
@@ -31,7 +31,7 @@ function StatementImage() {
       <div className="relative z-10 aspect-[1/1] w-full">
         <Image
           alt="Image of a woman"
-          src="/statement-image.jpg"
+          src="/Page-Images/statement-image.jpg"
           fill
           className="rounded-sm object-cover object-[70%_0]"
           sizes="(max-width: 768px) 50vw, (max-width: 1280px): 33vw"

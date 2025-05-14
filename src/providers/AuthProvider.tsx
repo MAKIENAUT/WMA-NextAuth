@@ -3,10 +3,14 @@
 
 import { SessionProvider } from "next-auth/react";
 import { ReactNode } from "react";
+import { AuthProvider as CustomAuthProvider } from "@/context/AuthContext";
 
-// Change to default export to match import in layout
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  return <SessionProvider>{children}</SessionProvider>;
+  return (
+    <SessionProvider>
+      <CustomAuthProvider>{children}</CustomAuthProvider>
+    </SessionProvider>
+  );
 }
 
 // Keep named export for backward compatibility
