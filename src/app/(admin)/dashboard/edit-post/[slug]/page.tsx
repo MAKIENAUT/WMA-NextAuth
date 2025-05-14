@@ -1,31 +1,33 @@
-// app/(main)/create-post/page.tsx
+// app/(main)/edit-post/[slug]/page.tsx
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
-// Import the EditorComponent with dynamic loading and SSR disabled
 const EditorComponent = dynamic(
-  () => import("../../../../components/EditorComponent"),
+  () => import("../../../../../components/EditorComponent"),
   { ssr: false }
 );
 
 const categories = ["Updates", "News", "Posts"];
 
-// Constants for limiting lengths
 const MAX_TITLE_LENGTH = 100;
 const MAX_SLUG_LENGTH = 50;
 
-export default function CreatePost() {
+export default function EditPost({ params }: { params: Promise<{ slug: string }> }) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Properly use the params with React.use()
+  const { slug } = use(params);
 
   const [formData, setFormData] = useState({
     title: "",
     content: "",
-    category: "Updates", // Default to Updates instead of Technology
+    category: "Updates",
     author: "",
     slug: "",
   });
@@ -34,6 +36,44 @@ export default function CreatePost() {
   const [imageName, setImageName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [currentImagePath, setCurrentImagePath] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await fetch(`/api/posts/${slug}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to fetch post");
+        }
+
+        const post = data.post;
+        setFormData({
+          title: post.title,
+          content: post.content,
+          category: post.category,
+          author: post.author,
+          slug: post.slug,
+        });
+
+        if (post.imagePath) {
+          setCurrentImagePath(post.imagePath);
+          setImagePreview(post.imagePath);
+          const fileName = post.imagePath.split("/").pop()?.split(".")[0] || "";
+          setImageName(fileName);
+        }
+      } catch (err: any) {
+        setError(err.message);
+        router.push("/dashboard/posts");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [slug, router]);
 
   const handleEditorChange = (content: string) => {
     setFormData((prev) => ({
@@ -49,17 +89,13 @@ export default function CreatePost() {
   ) => {
     const { name, value } = e.target;
 
-    // For title, enforce character limit
     if (name === "title") {
       const limitedTitle = value.slice(0, MAX_TITLE_LENGTH);
-
-      // Auto-generate slug from title with length limit
       const generatedSlug = limitedTitle
         .toLowerCase()
         .replace(/[^\w\s]/gi, "")
         .replace(/\s+/g, "-")
-        .slice(0, MAX_SLUG_LENGTH); // Limit slug length
-
+        .slice(0, MAX_SLUG_LENGTH);
       setFormData((prev) => ({
         ...prev,
         [name]: limitedTitle,
@@ -78,8 +114,6 @@ export default function CreatePost() {
     if (file) {
       setImageFile(file);
       setImagePreview(URL.createObjectURL(file));
-
-      // Set default image name based on file name
       const fileName = file.name.split(".")[0];
       setImageName(fileName);
     }
@@ -93,6 +127,7 @@ export default function CreatePost() {
     setImageFile(null);
     setImagePreview(null);
     setImageName("");
+    setCurrentImagePath("");
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -104,10 +139,7 @@ export default function CreatePost() {
     setError("");
 
     try {
-      // Create FormData object to handle file upload
       const postFormData = new FormData();
-
-      // Append text fields
       const finalFormData = {
         ...formData,
       };
@@ -116,20 +148,17 @@ export default function CreatePost() {
         postFormData.append(key, value);
       });
 
-      // Append image if exists
       if (imageFile) {
-        // Get file extension
         const fileExt = imageFile.name.split(".").pop();
-        // Create safe filename: slug-imageName.extension
         const safeImageName = `${formData.slug}-${imageName.replace(/[^\w]/g, "-")}.${fileExt}`;
-
         postFormData.append("image", imageFile);
         postFormData.append("imageName", safeImageName);
+      } else if (!currentImagePath) {
+        postFormData.append("image", "");
       }
 
-      // Send form data to API
-      const response = await fetch("/api/posts", {
-        method: "POST",
+      const response = await fetch(`/api/posts/${slug}`, {
+        method: "PUT",
         body: postFormData,
       });
 
@@ -139,7 +168,6 @@ export default function CreatePost() {
         throw new Error(data.error || "Something went wrong");
       }
 
-      // Redirect to blog posts page
       router.push("/dashboard/posts");
       router.refresh();
     } catch (err: any) {
@@ -149,9 +177,22 @@ export default function CreatePost() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="max-w-2xl mx-auto py-8 px-4">
+        <div className="text-center py-8">Loading post data...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-6">Create New Blog Post</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Edit Blog Post</h1>
+        <Link href="/dashboard/posts" className="text-blue-600 hover:underline">
+          Back to Posts
+        </Link>
+      </div>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -314,7 +355,7 @@ export default function CreatePost() {
           </div>
         </div>
 
-        {imagePreview && (
+        {(imagePreview || currentImagePath) && (
           <div>
             <label
               htmlFor="imageName"
@@ -343,22 +384,26 @@ export default function CreatePost() {
           >
             Content
           </label>
-
-          {/* Editor Component */}
           <EditorComponent
             initialContent={formData.content}
             onChange={handleEditorChange}
           />
         </div>
 
-        <div>
+        <div className="flex space-x-4">
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
           >
-            {isSubmitting ? "Creating..." : "Create Post"}
+            {isSubmitting ? "Updating..." : "Update Post"}
           </button>
+          <Link
+            href="/dashboard/posts"
+            className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 text-center"
+          >
+            Cancel
+          </Link>
         </div>
       </form>
     </div>
