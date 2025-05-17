@@ -1,8 +1,8 @@
 // app/api/posts/[slug]/route.ts
-import { NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
-
-// Replace with your actual database name
+import { NextResponse } from "next/server";
+import clientPromise from "@/lib/mongodb";
+import { writeFile, unlink } from "fs/promises";
+import { join } from "path";
 
 export async function GET(
   req: Request,
@@ -37,10 +37,10 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const slug = params.slug;
+    const { slug } = await params;
     const formData = await req.formData();
 
     // Extract fields
@@ -54,12 +54,11 @@ export async function PUT(
     // Validate required fields
     if (!title || !content || !category || !author || !newSlug) {
       return NextResponse.json(
-        { error: 'Invalid post slug' },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    // Connect to MongoDB
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE);
     const postsCollection = db.collection("posts");
@@ -118,7 +117,6 @@ export async function PUT(
     }
 
     // Update the post
-    // FIXED: Using the newer MongoDB driver options format
     const updatedPostResult = await postsCollection.findOneAndUpdate(
       { slug },
       {
@@ -135,17 +133,22 @@ export async function PUT(
       { returnDocument: "after" }
     );
 
-    // Check if result is null
     if (!updatedPostResult) {
       return NextResponse.json(
-        { error: 'Post not found' },
+        { error: "Post not found or could not be updated" },
         { status: 404 }
       );
     }
-    
-    return NextResponse.json({ post }, { status: 200 });
+
+    return NextResponse.json(
+      {
+        success: true,
+        post: updatedPostResult,
+      },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error('Error fetching post:', error);
+    console.error("Error updating post:", error);
     return NextResponse.json(
       { error: "Failed to update post" },
       { status: 500 }
@@ -155,10 +158,10 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const slug = params.slug;
+    const { slug } = await params;
 
     if (!slug) {
       return NextResponse.json({ error: "Invalid post slug" }, { status: 400 });
