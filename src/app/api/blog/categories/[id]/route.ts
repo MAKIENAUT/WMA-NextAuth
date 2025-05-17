@@ -1,104 +1,122 @@
-// app/api/categories/[id]/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+// app/api/posts/[id]/route.ts
+import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 
-// GET a single category by ID
+// GET a single post by ID
 export async function GET(
-  request: Request, { params }: { params: Promise<{ id: string }> }
+  request: Request,
+  { params }: { params: Promise<{ id: any }> }
 ) {
   try {
-    const id = Number((await params).id);
+    const { id } = await params;
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE!);
     
-    const category = await db.collection('categories').findOne({
+    const post = await db.collection('posts').findOne({
       _id: new ObjectId(id)
     });
     
-    if (!category) {
+    if (!post) {
       return NextResponse.json(
-        { success: false, message: 'Category not found' },
+        { success: false, message: 'Post not found' },
         { status: 404 }
       );
     }
     
-    return NextResponse.json({ success: true, data: category });
+    return NextResponse.json({ success: true, data: post });
   } catch (error) {
-    console.error('Failed to fetch category:', error);
+    console.error('Failed to fetch post:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to fetch category' },
+      { success: false, message: 'Failed to fetch post' },
       { status: 500 }
     );
   }
 }
 
-// UPDATE a category
+// UPDATE a post
 export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  request: Request,
+  { params }: { params: Promise<{ id: any }> }
 ) {
   try {
-    const id  = (await params).id;
+    const { id } = await params;
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE!);
     
     const body = await request.json();
     
-    const result = await db.collection('categories').updateOne(
+    if (body.date && typeof body.date === 'string') {
+      body.date = new Date(body.date);
+    }
+    
+    if (body.category) {
+      const categoryExists = await db.collection('categories').findOne({ 
+        category: body.category 
+      });
+      
+      if (!categoryExists) {
+        return NextResponse.json(
+          { success: false, message: 'Category does not exist' },
+          { status: 400 }
+        );
+      }
+    }
+    
+    const result = await db.collection('posts').updateOne(
       { _id: new ObjectId(id) },
       { $set: body }
     );
     
     if (result.matchedCount === 0) {
       return NextResponse.json(
-        { success: false, message: 'Category not found' },
+        { success: false, message: 'Post not found' },
         { status: 404 }
       );
     }
     
-    const updatedCategory = await db.collection('categories').findOne({
+    const updatedPost = await db.collection('posts').findOne({
       _id: new ObjectId(id)
     });
     
-    return NextResponse.json({ success: true, data: updatedCategory });
+    return NextResponse.json({ success: true, data: updatedPost });
   } catch (error) {
-    console.error('Failed to update category:', error);
+    console.error('Failed to update post:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to update category' },
+      { success: false, message: 'Failed to update post' },
       { status: 500 }
     );
   }
 }
 
-// DELETE a category
+// DELETE a post
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  request: Request,
+  { params }: { params: Promise<{ id: any }> }
 ) {
   try {
-    const id  = (await params).id;
+    const { id } = await params;
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE!);
     
-    const result = await db.collection('categories').deleteOne({
+    const result = await db.collection('posts').deleteOne({
       _id: new ObjectId(id)
     });
     
     if (result.deletedCount === 0) {
       return NextResponse.json(
-        { success: false, message: 'Category not found' },
+        { success: false, message: 'Post not found' },
         { status: 404 }
       );
     }
     
     return NextResponse.json(
-      { success: true, message: 'Category deleted successfully' }
+      { success: true, message: 'Post deleted successfully' }
     );
   } catch (error) {
-    console.error('Failed to delete category:', error);
+    console.error('Failed to delete post:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to delete category' },
+      { success: false, message: 'Failed to delete post' },
       { status: 500 }
     );
   }
