@@ -14,7 +14,6 @@ import { ServiceData } from "@/types/services";
 interface ServiceProcessProps {
   serviceData: ServiceData;
   serviceName: string;
-  applyLink?: string;
 }
 
 // Assuming ServiceData has this shape for processSteps
@@ -50,7 +49,6 @@ function ServiceProcessContent({
 export default function ServiceProcess({
   serviceData,
   serviceName,
-  applyLink,
 }: ServiceProcessProps) {
   if (serviceName === "temporary-employment") {
     return (
@@ -85,7 +83,6 @@ export default function ServiceProcess({
             title="Ready to Get Started?"
             description={`Take the first step towards ${serviceData.title.toLowerCase()} by applying now.`}
             buttonText="Apply Now"
-            href={applyLink || "#"}
           />
         </ServiceProcessContent>
       </ServiceProcessWrapper>
@@ -118,7 +115,6 @@ export default function ServiceProcess({
             title="Ready to Get Started?"
             description={`Take the first step towards ${serviceData.title.toLowerCase()} by applying now.`}
             buttonText="Apply Now"
-            href={applyLink || "#"}
           />
         </ServiceProcessContent>
       </ServiceProcessWrapper>

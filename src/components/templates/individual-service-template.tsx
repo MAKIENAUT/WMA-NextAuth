@@ -252,12 +252,10 @@ interface ServiceTemplateProps {
     | "web-development"
     | "family-based"
     | "temporary-employment";
-  applyLink?: string;
 }
 
 export default function IndividualServiceTemplate({
   serviceName,
-  applyLink,
 }: ServiceTemplateProps) {
   const serviceData = individual_services[serviceName];
 
@@ -265,11 +263,5 @@ export default function IndividualServiceTemplate({
     notFound();
   }
 
-  return (
-    <ServiceProcess
-      serviceData={serviceData}
-      serviceName={serviceName}
-      applyLink={applyLink} // Pass the applyLink prop
-    />
-  );
+  return <ServiceProcess serviceData={serviceData} serviceName={serviceName} />;
 }

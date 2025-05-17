@@ -3,56 +3,13 @@ import HeroTemplate, { hero_items } from "@/components/templates/hero-template";
 import { notFound } from "next/navigation";
 import IndividualServiceTemplate from "@/components/templates/individual-service-template";
 
-// Define the type for process steps
-type ProcessStep = {
-  step: string;
-  title: string;
-  description: string;
-};
-
-// Define the type for service categories
-type ServiceCategory = {
-  title: string;
-  description: string;
-  processSteps: ProcessStep[];
-};
-
-// Define the base service type
-type BaseService = {
-  id: string;
-  title: string;
-  description: string;
-  applyLink?: string; // Make it optional
-};
-
-// Define specific service types
-type ProcessStepService = BaseService & {
-  processSteps: ProcessStep[];
-  category?: never;
-};
-
-type CategoryService = BaseService & {
-  category: ServiceCategory[];
-  processSteps?: never;
-};
-
-// Combine all service types
-type Service = ProcessStepService | CategoryService;
-
-// Define service names as literal types for type safety
-export type ServiceName =
-  | "study-and-exchange"
-  | "web-development"
-  | "family-based"
-  | "temporary-employment";
-
-// Define the services object with proper typing
-const individual_services: Record<ServiceName, Service> = {
+const individual_services = {
   "study-and-exchange": {
     id: "study-and-exchange",
     title: "Study and Exchange Visas (J1)",
-    description: "Comprehensive guidance for international students...",
-    applyLink: "/forms/J1-Application",
+
+    description:
+      "Comprehensive guidance for international students and exchange visitors seeking to study or participate in exchange programs.",
     processSteps: [
       {
         step: "01",
@@ -289,9 +246,14 @@ const individual_services: Record<ServiceName, Service> = {
   },
 };
 
+// Adjusting the Params and SearchParams to be Promises
 type Props = {
   params: Promise<{
-    serviceName: keyof typeof individual_services;
+    serviceName:
+      | "study-and-exchange"
+      | "web-development"
+      | "family-based"
+      | "temporary-employment";
   }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
@@ -316,30 +278,30 @@ export default async function ServicePage({ params }: Props) {
   const resolvedParams = await params;
   const { serviceName } = resolvedParams;
 
+  // Check if service exists
   if (!individual_services[serviceName]) {
     notFound();
   }
 
+  // Type guard for valid hero route
   const isValidHeroRoute = (
     route: string
   ): route is keyof typeof hero_items => {
     return route in hero_items;
   };
 
+  // Set the hero route, defaulting to 'home' if not found
   const heroRoute = isValidHeroRoute(serviceName) ? serviceName : "home";
-  const serviceData = individual_services[serviceName];
 
   return (
     <>
       <HeroTemplate route={heroRoute} />
-      <IndividualServiceTemplate
-        serviceName={serviceName as ServiceName}
-        applyLink={serviceData.applyLink} // This is already correct
-      />
+      <IndividualServiceTemplate serviceName={serviceName} />
     </>
   );
 }
 
+// Generate static paths for all known services
 export async function generateStaticParams() {
   return Object.keys(individual_services).map((service) => ({
     serviceName: service,

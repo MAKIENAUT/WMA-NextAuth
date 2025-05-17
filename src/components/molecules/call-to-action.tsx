@@ -1,13 +1,11 @@
 import React from "react";
 import { Button } from "@/components/atoms/ui/button";
-import Link from "next/link";
 
 interface CallToActionProps {
   title: string;
   description: string;
   buttonText: string;
   onButtonClick?: () => void;
-  href?: string;
 }
 
 export default function CallToAction({
@@ -15,7 +13,6 @@ export default function CallToAction({
   description,
   buttonText,
   onButtonClick,
-  href = "#",
 }: CallToActionProps) {
   return (
     <footer className="border-t border-gray-200 pt-6">
@@ -26,17 +23,9 @@ export default function CallToAction({
           </h4>
           <p className="lg:text-lg">{description}</p>
         </div>
-        {href && href !== "#" ? (
-          <Link href={href}>
-            <Button variant="service" onClick={onButtonClick} className="">
-              {buttonText}
-            </Button>
-          </Link>
-        ) : (
-          <Button variant="service" onClick={onButtonClick} className="">
-            {buttonText}
-          </Button>
-        )}
+        <Button variant="service" onClick={onButtonClick} className="">
+          {buttonText}
+        </Button>
       </div>
     </footer>
   );

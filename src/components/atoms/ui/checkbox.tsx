@@ -1,30 +1,26 @@
-// src/components/atoms/ui/checkbox.tsx
+// src/app/components/atoms/ui/checkbox.tsx
 import { dm_sans } from "@/lib/fonts";
-import * as React from "react";
-import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
-import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import * as React from "react";
 
-const Checkbox = React.forwardRef<
-  React.ElementRef<typeof CheckboxPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
->(({ className, ...props }, ref) => (
-  <CheckboxPrimitive.Root
-    ref={ref}
-    className={cn(
-      dm_sans.className,
-      "peer h-5 w-5 shrink-0 rounded-md border border-wma-darkTeal ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wma-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-wma-darkTeal data-[state=checked]:text-white",
-      className
-    )}
-    {...props}
-  >
-    <CheckboxPrimitive.Indicator
-      className={cn("flex items-center justify-center text-current")}
-    >
-      <Check className="h-4 w-4" />
-    </CheckboxPrimitive.Indicator>
-  </CheckboxPrimitive.Root>
-));
-Checkbox.displayName = CheckboxPrimitive.Root.displayName;
+const Checkbox = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
+  ({ className, ...props }, ref) => {
+    return (
+      <input
+        type="checkbox"
+        className={cn(
+          dm_sans.className,
+          "h-4 w-4 rounded border-wma-darkTeal text-wma-gold focus:ring-wma-gold focus:ring-offset-wma-gold",
+          "transition-all ease-in-out focus:ring-2 focus:ring-offset-2",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          className
+        )}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+Checkbox.displayName = "Checkbox";
 
 export { Checkbox };

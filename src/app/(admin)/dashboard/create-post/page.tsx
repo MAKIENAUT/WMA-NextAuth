@@ -140,7 +140,7 @@ export default function CreatePost() {
       }
 
       // Redirect to blog posts page
-      router.push("/dashboard/posts");
+      router.push("/posts");
       router.refresh();
     } catch (err: any) {
       setError(err.message);
