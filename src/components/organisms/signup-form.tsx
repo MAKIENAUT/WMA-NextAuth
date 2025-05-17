@@ -269,10 +269,10 @@ export default function SignUpForm() {
                   id="acceptTerms"
                   name="acceptTerms"
                   checked={formData.acceptTerms}
-                  onCheckedChange={(checked: boolean) =>
+                  onCheckedChange={(checked) =>
                     setFormData((prev) => ({
                       ...prev,
-                      acceptTerms: checked,
+                      acceptTerms: !!checked, // The !! ensures it's always a boolean
                     }))
                   }
                 />

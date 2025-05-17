@@ -1,10 +1,8 @@
-// import { LogoutMutationProps } from "@/features/auth/types/logout-mutation";
-// import { DataProps } from "@/features/auth/types/user-data";
+// Updated navbar-links.ts
+import { Session } from "next-auth";
 
 export type NavbarLinksProps = {
   items: { title: string; url: string }[];
-  // data: DataProps;
-  isPending: boolean;
-  isError: boolean;
-  // logoutMutation: LogoutMutationProps;
+  session: Session | null;
+  isLoading: boolean;
 };

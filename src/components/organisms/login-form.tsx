@@ -1,7 +1,7 @@
 // src/components/organisms/LoginForm.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
@@ -15,11 +15,9 @@ import InputGroup from "@/components/molecules/input-group";
 import FormFooter from "@/components/molecules/form-footer";
 import { useAuth } from "@/context/AuthContext";
 
-export default function LoginForm() {
+function LoginFormContent({ callbackUrl }: { callbackUrl: string }) {
   const { signIn } = useAuth();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
   
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -179,5 +177,16 @@ export default function LoginForm() {
       </FormContent>
       <FormFooter variant="login" />
     </div>
+  );
+}
+
+export default function LoginForm() {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+
+  return (
+    <Suspense fallback={<div className="w-full max-w-md mx-auto p-4">Loading form...</div>}>
+      <LoginFormContent callbackUrl={callbackUrl} />
+    </Suspense>
   );
 }

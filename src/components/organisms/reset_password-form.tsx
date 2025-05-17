@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/atoms/ui/button";
 import FormContent from "@/components/molecules/form-content";
@@ -11,9 +11,9 @@ import FormFooter from "@/components/molecules/form-footer";
 import { Input } from "@/components/atoms/ui/input";
 import { Label } from "@/components/atoms/ui/label";
 import Link from "next/link";
-import { Eye, EyeOff } from "lucide-react"; // Import eye icons
+import { Eye, EyeOff } from "lucide-react";
 
-export default function ResetPasswordForm() {
+function ResetPasswordFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -31,11 +31,8 @@ export default function ResetPasswordForm() {
     confirmPassword: "",
   });
 
-  // Password regex pattern
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-  // Validate token and increment attempt counter on mount
   useEffect(() => {
     const validateToken = async () => {
       if (!token || !email) {
@@ -77,13 +74,11 @@ export default function ResetPasswordForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords don't match");
       return;
     }
 
-    // Validate password against regex pattern
     if (!passwordRegex.test(formData.password)) {
       setError(
         "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)"
@@ -118,7 +113,6 @@ export default function ResetPasswordForm() {
         throw new Error(data.error || "Failed to reset password");
       }
 
-      // Redirect to login page with success message
       router.push("/signin?reset=success");
     } catch (err) {
       setError(
@@ -142,7 +136,6 @@ export default function ResetPasswordForm() {
     );
   }
 
-  // Handle invalid or missing token/email or max attempts reached
   if (!tokenValid || !token || !email) {
     return (
       <div className="w-full max-w-md mx-auto py-4 px-4 overflow-y-auto">
@@ -262,5 +255,13 @@ export default function ResetPasswordForm() {
       </FormContent>
       <FormFooter variant="login" />
     </div>
+  );
+}
+
+export default function ResetPasswordForm() {
+  return (
+    <Suspense fallback={<div className="w-full max-w-md mx-auto p-4">Loading...</div>}>
+      <ResetPasswordFormContent />
+    </Suspense>
   );
 }
