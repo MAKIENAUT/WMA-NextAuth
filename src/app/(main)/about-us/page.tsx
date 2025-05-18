@@ -13,7 +13,7 @@ const ABOUT_US_CONTENT = {
     "At West Migration Agency, we believe in providing exceptional service and personalized support to help our clients achieve their goals. We understand that each individual has unique needs and circumstances and are committed to delivering tailored solutions to meet those needs. Contact us today to learn how we can help you with your study and exchange program, family-based petition, or temporary employment needs.",
   ],
   image: {
-    src: "/about-us-image.jpg",
+    src: "/Page-Images/about-us-image.jpg",
     alt: "Woman at West Migration Agency",
   },
 };
