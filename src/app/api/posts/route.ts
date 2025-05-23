@@ -8,7 +8,26 @@ import { v4 as uuidv4 } from 'uuid';
 // Replace with your actual database name
 const DATABASE_NAME = "Production-DB";
 
+
+
 export async function POST(req: Request) {
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+  
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers });
+  }
+
+  if (!req.headers.get('content-type')?.includes('multipart/form-data')) {
+    return NextResponse.json(
+      { error: 'Invalid content type' },
+      { status: 400, headers }
+    );
+  }
+
   try {
     // Handle form data instead of JSON
     const formData = await req.formData();
