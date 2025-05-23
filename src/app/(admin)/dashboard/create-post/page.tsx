@@ -102,43 +102,35 @@ export default function CreatePost() {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
-
+  
     try {
-      // Create FormData object to handle file upload
       const postFormData = new FormData();
-
+  
       // Append text fields
-      const finalFormData = {
-        ...formData,
-      };
-
-      Object.entries(finalFormData).forEach(([key, value]) => {
-        postFormData.append(key, value);
-      });
-
-      // Append image if exists
+      postFormData.append('title', formData.title);
+      postFormData.append('content', formData.content);
+      postFormData.append('category', formData.category);
+      postFormData.append('author', formData.author);
+      postFormData.append('slug', formData.slug);
+  
+      // Append image only if exists
       if (imageFile) {
-        // Get file extension
-        const fileExt = imageFile.name.split(".").pop();
-        // Create safe filename: slug-imageName.extension
+        const fileExt = imageFile.name.split('.').pop();
         const safeImageName = `${formData.slug}-${imageName.replace(/[^\w]/g, "-")}.${fileExt}`;
-
-        postFormData.append("image", imageFile);
-        postFormData.append("imageName", safeImageName);
+        postFormData.append('image', imageFile);
+        postFormData.append('imageName', safeImageName);
       }
-
-      // Send form data to API
+  
       const response = await fetch("/api/posts", {
         method: "POST",
         body: postFormData,
       });
-
-      const data = await response.json();
-
+  
       if (!response.ok) {
-        throw new Error(data.error || "Something went wrong");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Something went wrong");
       }
-
+  
       // Redirect to blog posts page
       router.push("/posts");
       router.refresh();
