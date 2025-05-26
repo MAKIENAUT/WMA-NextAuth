@@ -23,9 +23,16 @@ export async function POST(req: Request) {
       const fileExt = imageFile.name.split('.').pop();
       const safeFileName = `${slug}-${Date.now()}.${fileExt}`;
       
+      // Get token from environment variable or use fallback
+      const blobToken = process.env.BLOB_READ_WRITE_TOKEN || 'vercel_blob_rw_goE3wUXUUNM5VqBG_3SSvSyc3JwZw6wl5VWKPfDwT7ByqZy';
+      
+      // Debug logging
+      console.log('Environment token exists:', !!process.env.BLOB_READ_WRITE_TOKEN);
+      console.log('Using token (first 20 chars):', blobToken.substring(0, 20) + '...');
+      
       const blob = await put(safeFileName, imageFile, {
         access: 'public',
-        token: process.env.BLOB_READ_WRITE_TOKEN
+        token: blobToken
       });
       
       imageUrl = blob.url;
@@ -38,7 +45,7 @@ export async function POST(req: Request) {
       category,
       author,
       slug,
-      imageUrl, // Changed from imagePath to imageUrl
+      imageUrl,
       createdAt: new Date(),
       updatedAt: new Date()
     };
