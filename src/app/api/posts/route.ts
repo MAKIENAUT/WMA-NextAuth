@@ -1,7 +1,6 @@
 // app/api/posts/route.ts
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { put } from '@vercel/blob';
 import clientPromise from '@/lib/mongodb';
 
 export async function POST(req: Request) {
@@ -17,21 +16,19 @@ export async function POST(req: Request) {
     const imageFile = formData.get('image') as File | null;
     const imageName = formData.get('imageName') as string | null;
 
-    let imagePath = null;
+    let imageUrl = null;
 
     // Process image upload if exists
     if (imageFile && imageFile.size > 0 && imageName) {
-      const uploadDir = join(process.cwd(), 'public', 'uploads', 'posts');
-      await mkdir(uploadDir, { recursive: true });
-      
       const fileExt = imageFile.name.split('.').pop();
       const safeFileName = `${slug}-${Date.now()}.${fileExt}`;
-      const filePath = join(uploadDir, safeFileName);
       
-      const buffer = Buffer.from(await imageFile.arrayBuffer());
-      await writeFile(filePath, buffer);
+      const blob = await put(safeFileName, imageFile, {
+        access: 'public',
+        token: process.env.BLOB_READ_WRITE_TOKEN
+      });
       
-      imagePath = `/uploads/posts/${safeFileName}`;
+      imageUrl = blob.url;
     }
 
     // Prepare post data
@@ -41,7 +38,7 @@ export async function POST(req: Request) {
       category,
       author,
       slug,
-      imagePath,
+      imageUrl, // Changed from imagePath to imageUrl
       createdAt: new Date(),
       updatedAt: new Date()
     };
