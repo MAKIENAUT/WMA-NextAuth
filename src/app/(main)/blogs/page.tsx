@@ -13,7 +13,7 @@ interface Post {
   category: string;
   author: string;
   slug: string;
-  imagePath: string | null;
+  imageUrl: string | null; // Changed from imagePath to imageUrl
   createdAt: string;
 }
 
@@ -323,28 +323,28 @@ export default function Posts() {
                   >
                     {/* Make the entire card clickable */}
                     <Link
-                      href={`/posts/${post.slug}`}
+                      href={`/blogs/${post.slug}`}
                       className="absolute inset-0 z-10"
                       aria-label={`Read post: ${post.title}`}
                     >
                       <span className="sr-only">Read post: {post.title}</span>
                     </Link>
 
-                    {/* Card Image as Background with proportional height */}
+                    {/* Card Image as Background with 16:9 aspect ratio */}
                     <div
-                      className="w-full h-60 relative"
+                      className="w-full aspect-[16/9] relative"
                       style={{
-                        backgroundImage: post.imagePath
-                          ? `url(${post.imagePath})`
+                        backgroundImage: post.imageUrl
+                          ? `url(${post.imageUrl})`
                           : "none",
                         backgroundSize: "cover",
                         backgroundPosition: "center",
-                        backgroundColor: post.imagePath
+                        backgroundColor: post.imageUrl
                           ? "transparent"
                           : "#f3f4f6",
                       }}
                     >
-                      {!post.imagePath && (
+                      {!post.imageUrl && (
                         <div className="absolute inset-0 flex items-center justify-center">
                           <svg
                             className="w-12 h-12 text-gray-300"

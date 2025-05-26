@@ -13,7 +13,7 @@ interface Post {
   category: string;
   author: string;
   slug: string;
-  imagePath: string | null;
+  imageUrl: string | null; // Changed from imagePath to imageUrl
   createdAt: string;
 }
 
@@ -199,14 +199,14 @@ const renderEditorContent = (content: string): JSX.Element => {
 const RecommendedPostCard = ({ post }: { post: Post }) => {
   return (
     <Link
-      href={`/posts/${post.slug}`}
+      href={`/blogs/${post.slug}`}
       className="block mb-5 hover:bg-blue-50 transition-colors rounded-lg p-2"
     >
       <div className="flex items-start space-x-4">
-        {post.imagePath ? (
-          <div className="relative w-24 h-24 flex-shrink-0">
+        {post.imageUrl ? (
+          <div className="relative w-24 h-[54px] flex-shrink-0">
             <Image
-              src={post.imagePath}
+              src={post.imageUrl}
               alt={post.title}
               fill
               sizes="96px"
@@ -215,7 +215,7 @@ const RecommendedPostCard = ({ post }: { post: Post }) => {
             />
           </div>
         ) : (
-          <div className="w-24 h-24 bg-gray-200 rounded-md flex-shrink-0"></div>
+          <div className="w-24 h-[54px] bg-gray-200 rounded-md flex-shrink-0"></div>
         )}
         <div className="flex-1 overflow-hidden">
           <h3 className="font-semibold text-base line-clamp-2 mb-1 text-gray-800">
@@ -293,7 +293,7 @@ export default function PostDetail() {
           {error}
         </div>
         <div className="mt-4">
-          <Link href="/posts" className="text-blue-600 hover:underline">
+          <Link href="/blogs" className="text-blue-600 hover:underline">
             ← Back to all posts
           </Link>
         </div>
@@ -306,7 +306,7 @@ export default function PostDetail() {
       <div className="max-w-6xl mx-auto py-8 px-4">
         <div className="text-center py-10 text-gray-500">Post not found</div>
         <div className="mt-4 text-center">
-          <Link href="/posts" className="text-blue-600 hover:underline">
+          <Link href="/blogs" className="text-blue-600 hover:underline">
             ← Back to all posts
           </Link>
         </div>
@@ -318,7 +318,7 @@ export default function PostDetail() {
     <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6">
       <div className="mb-6">
         <Link
-          href="/posts"
+          href="/blogs"
           className="text-blue-600 hover:underline inline-flex items-center"
         >
           <span className="mr-1">←</span> Back to all posts
@@ -328,10 +328,10 @@ export default function PostDetail() {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Main Content */}
         <article className="bg-white shadow-md rounded-lg overflow-hidden lg:flex-grow">
-          {post.imagePath && (
-            <div className="relative w-full h-80">
+          {post.imageUrl && (
+            <div className="relative w-full aspect-[16/9]">
               <Image
-                src={post.imagePath}
+                src={post.imageUrl}
                 alt={post.title}
                 fill
                 priority
