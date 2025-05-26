@@ -293,7 +293,7 @@ export default function PostDetail() {
           {error}
         </div>
         <div className="mt-4">
-          <Link href="/blogs" className="text-blue-600 hover:underline">
+          <Link href="/posts" className="text-blue-600 hover:underline">
             ← Back to all posts
           </Link>
         </div>
@@ -306,7 +306,7 @@ export default function PostDetail() {
       <div className="max-w-6xl mx-auto py-8 px-4">
         <div className="text-center py-10 text-gray-500">Post not found</div>
         <div className="mt-4 text-center">
-          <Link href="/blogs" className="text-blue-600 hover:underline">
+          <Link href="/posts" className="text-blue-600 hover:underline">
             ← Back to all posts
           </Link>
         </div>
@@ -318,7 +318,7 @@ export default function PostDetail() {
     <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6">
       <div className="mb-6">
         <Link
-          href="/blogs"
+          href="/posts"
           className="text-blue-600 hover:underline inline-flex items-center"
         >
           <span className="mr-1">←</span> Back to all posts

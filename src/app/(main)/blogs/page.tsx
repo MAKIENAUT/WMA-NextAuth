@@ -323,7 +323,7 @@ export default function Posts() {
                   >
                     {/* Make the entire card clickable */}
                     <Link
-                      href={`/blogs/${post.slug}`}
+                      href={`/posts/${post.slug}`}
                       className="absolute inset-0 z-10"
                       aria-label={`Read post: ${post.title}`}
                     >
