@@ -88,7 +88,7 @@ function FooterLink({
   content: string | ReactNode;
 }) {
   return (
-    <Button asChild variant={"link-footer" as const} size={"none" as const}>
+    <Button asChild variant="link-footer" size="none">
       <Link href={url}>{content}</Link>
     </Button>
   );
