@@ -30,6 +30,7 @@ export default function EditPost({ params }: { params: Promise<{ slug: string }>
     category: "Updates",
     author: "",
     slug: "",
+    dateAuthored: new Date().toISOString().split('T')[0], // Default to today's date
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -50,18 +51,28 @@ export default function EditPost({ params }: { params: Promise<{ slug: string }>
         }
 
         const post = data.post;
+        
+        // Format dateAuthored for the date input (YYYY-MM-DD)
+        let formattedDate = new Date().toISOString().split('T')[0];
+        if (post.dateAuthored) {
+          const authoredDate = new Date(post.dateAuthored);
+          formattedDate = authoredDate.toISOString().split('T')[0];
+        }
+
         setFormData({
           title: post.title,
           content: post.content,
           category: post.category,
           author: post.author,
           slug: post.slug,
+          dateAuthored: formattedDate,
         });
 
-        if (post.imagePath) {
-          setCurrentImagePath(post.imagePath);
-          setImagePreview(post.imagePath);
-          const fileName = post.imagePath.split("/").pop()?.split(".")[0] || "";
+        if (post.imagePath || post.imageUrl) {
+          const imageUrl = post.imageUrl || post.imagePath;
+          setCurrentImagePath(imageUrl);
+          setImagePreview(imageUrl);
+          const fileName = imageUrl.split("/").pop()?.split(".")[0] || "";
           setImageName(fileName);
         }
       } catch (err: any) {
@@ -285,6 +296,27 @@ export default function EditPost({ params }: { params: Promise<{ slug: string }>
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
+        </div>
+
+        <div>
+          <label
+            htmlFor="dateAuthored"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Date Authored
+          </label>
+          <input
+            type="date"
+            id="dateAuthored"
+            name="dateAuthored"
+            value={formData.dateAuthored}
+            onChange={handleChange}
+            required
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            This is the date when the post was originally written/authored
+          </p>
         </div>
 
         <div>

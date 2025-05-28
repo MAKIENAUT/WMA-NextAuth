@@ -1,8 +1,7 @@
 // app/api/posts/[slug]/route.ts
 import { NextResponse } from "next/server";
+import { put, del } from '@vercel/blob';
 import clientPromise from "@/lib/mongodb";
-import { writeFile, unlink } from "fs/promises";
-import { join } from "path";
 
 export async function GET(
   req: Request,
@@ -16,7 +15,7 @@ export async function GET(
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DATABASE);
+    const db = client.db(process.env.MONGODB_DATABASE || 'Production-DB');
     const postsCollection = db.collection("posts");
 
     const post = await postsCollection.findOne({ slug });
@@ -49,10 +48,12 @@ export async function PUT(
     const category = formData.get("category") as string;
     const author = formData.get("author") as string;
     const newSlug = formData.get("slug") as string;
+    const dateAuthored = formData.get("dateAuthored") as string;
     const imageFile = formData.get("image") as File | null;
+    const imageName = formData.get("imageName") as string | null;
 
     // Validate required fields
-    if (!title || !content || !category || !author || !newSlug) {
+    if (!title || !content || !category || !author || !newSlug || !dateAuthored) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -60,7 +61,7 @@ export async function PUT(
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DATABASE);
+    const db = client.db(process.env.MONGODB_DATABASE || 'Production-DB');
     const postsCollection = db.collection("posts");
 
     // Check if new slug is already taken by another post
@@ -74,47 +75,51 @@ export async function PUT(
       }
     }
 
-    // Handle image update
-    let imagePath = null;
+    // Get existing post
     const existingPost = await postsCollection.findOne({ slug });
 
     if (!existingPost) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    if (imageFile) {
-      const imageName =
-        (formData.get("imageName") as string) || `${newSlug}-${Date.now()}`;
-      const imagesDir = join(process.cwd(), "public", "images", "posts");
+    // Handle image update
+    let imageUrl = existingPost.imageUrl || null;
+    const blobToken = process.env.BLOB_READ_WRITE_TOKEN || 'vercel_blob_rw_goE3wUXUUNM5VqBG_3SSvSyc3JwZw6wl5VWKPfDwT7ByqZy';
 
-      // Create the image file path
-      const ext = imageFile.name.split(".").pop();
-      const safeImageName = `${newSlug}-${imageName.replace(/[^\w-]/g, "")}.${ext}`;
-      const imageDest = join(imagesDir, safeImageName);
-
-      // Save the new image
-      const imageBuffer = Buffer.from(await imageFile.arrayBuffer());
-      await writeFile(imageDest, imageBuffer);
-
-      // Delete old image if it exists
-      if (existingPost?.imagePath) {
+    if (imageFile && imageFile.size > 0 && imageName) {
+      // Delete the previous image if it exists
+      if (existingPost.imageUrl) {
         try {
-          const oldImagePath = join(
-            process.cwd(),
-            "public",
-            existingPost.imagePath
-          );
-          await unlink(oldImagePath);
-        } catch (err) {
-          console.error("Error deleting old image:", err);
+          await del(existingPost.imageUrl, { token: blobToken });
+          console.log('Previous image deleted successfully');
+        } catch (deleteError) {
+          console.error('Error deleting previous image:', deleteError);
+          // Continue with upload even if deletion fails
         }
       }
 
-      imagePath = `/images/posts/${safeImageName}`;
-    } else {
-      // Keep existing image if no new image is uploaded
-      imagePath = existingPost?.imagePath || null;
+      // Upload new image
+      const fileExt = imageFile.name.split('.').pop();
+      const safeFileName = `${newSlug}-${Date.now()}.${fileExt}`;
+      
+      try {
+        const blob = await put(safeFileName, imageFile, {
+          access: 'public',
+          token: blobToken
+        });
+        
+        imageUrl = blob.url;
+      } catch (blobError) {
+        console.error('Error uploading to blob storage:', blobError);
+        return NextResponse.json(
+          { error: 'Failed to upload image' },
+          { status: 500 }
+        );
+      }
     }
+
+    // Convert dateAuthored string to Date object
+    const authoredDate = new Date(dateAuthored);
 
     // Update the post
     const updatedPostResult = await postsCollection.findOneAndUpdate(
@@ -126,8 +131,9 @@ export async function PUT(
           category,
           author,
           slug: newSlug,
-          imagePath,
-          updatedAt: new Date(),
+          dateAuthored: authoredDate, // User-specified authored date
+          imageUrl,
+          updatedAt: new Date(), // Automatic update timestamp
         },
       },
       { returnDocument: "after" }
@@ -168,23 +174,25 @@ export async function DELETE(
     }
 
     const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DATABASE);
+    const db = client.db(process.env.MONGODB_DATABASE || 'Production-DB');
     const postsCollection = db.collection("posts");
 
-    // Find post first to get image path
+    // Find post first to get image info
     const post = await postsCollection.findOne({ slug });
 
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    // Delete the image if it exists
-    if (post.imagePath) {
+    // Delete the image from Vercel Blob storage if it exists
+    if (post.imageUrl) {
       try {
-        const imagePath = join(process.cwd(), "public", post.imagePath);
-        await unlink(imagePath);
-      } catch (err) {
-        console.error("Error deleting image:", err);
+        const blobToken = process.env.BLOB_READ_WRITE_TOKEN || 'vercel_blob_rw_goE3wUXUUNM5VqBG_3SSvSyc3JwZw6wl5VWKPfDwT7ByqZy';
+        await del(post.imageUrl, { token: blobToken });
+        console.log('Image deleted from blob storage successfully');
+      } catch (deleteError) {
+        console.error('Error deleting image from blob storage:', deleteError);
+        // Continue with post deletion even if image deletion fails
       }
     }
 

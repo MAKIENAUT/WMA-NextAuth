@@ -13,8 +13,9 @@ interface Post {
   category: string;
   author: string;
   slug: string;
-  imageUrl: string | null; // Changed from imagePath to imageUrl
+  imageUrl: string | null;
   createdAt: string;
+  dateAuthored: string;
 }
 
 // Main navigation categories (similar to the WMA Blogs tabs)
@@ -368,7 +369,7 @@ export default function Posts() {
                     <div className="p-6 flex flex-col flex-grow">
                       {/* Date */}
                       <div className="text-gray-600 text-sm mb-2">
-                        {formatDate(post.createdAt)}
+                        {formatDate(post.dateAuthored)}
                       </div>
 
                       {/* Title - limit to 2 lines */}

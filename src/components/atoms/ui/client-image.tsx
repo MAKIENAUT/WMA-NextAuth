@@ -6,8 +6,9 @@ import Image from "next/image";
 interface ClientImageProps {
   src: string;
   alt: string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
+  fill?: boolean;
   priority?: boolean;
   className?: string;
   fallbackSrc?: string;
@@ -18,6 +19,7 @@ export default function ClientImage({
   alt,
   width,
   height,
+  fill,
   priority,
   className,
   fallbackSrc = "/images/placeholder.png", // Default fallback image
@@ -34,12 +36,16 @@ export default function ClientImage({
     }
   };
 
+  // When using fill, width and height should not be provided
+  const imageProps = fill
+    ? { fill: true }
+    : { width: width!, height: height! };
+
   return (
     <Image
       src={imgSrc}
       alt={alt}
-      width={width}
-      height={height}
+      {...imageProps}
       priority={priority}
       className={className}
       onError={handleError}

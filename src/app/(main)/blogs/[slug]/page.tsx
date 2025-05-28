@@ -13,8 +13,9 @@ interface Post {
   category: string;
   author: string;
   slug: string;
-  imageUrl: string | null; // Changed from imagePath to imageUrl
+  imageUrl: string | null;
   createdAt: string;
+  dateAuthored: string;
 }
 
 const renderEditorContent = (content: string): JSX.Element => {
@@ -351,7 +352,8 @@ export default function PostDetail() {
               </div>
               <div className="text-gray-600">
                 By <span className="font-medium">{post.author}</span> •{" "}
-                {new Date(post.createdAt).toLocaleDateString("en-US", {
+                {new Date(post.dateAuthored).toLocaleDateString("en-US", {
+                  // Changed from post.createdAt
                   year: "numeric",
                   month: "long",
                   day: "numeric",
